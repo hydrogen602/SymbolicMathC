@@ -1,0 +1,3 @@
+# Collatz Conjecture
+
+using C
