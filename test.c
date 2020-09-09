@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+//Tim's new comment
+//Tim's newer comment, made in VSCode
+
 int nextStep(int x) {
     printf("%d\n", x);
 
