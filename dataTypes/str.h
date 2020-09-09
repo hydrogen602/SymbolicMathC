@@ -20,10 +20,18 @@ String buildString(char * st);
 
 void str_free(String * self);
 
+String str_copy(String * self);
+
 char * str_getString(String * self);
 
 size_t str_getLen(String * self);
 
 String str_concat(String * self, String * other);
+
+/**
+ * Uses the array.h stuff!
+ * Also each value must be freed individually!
+ */
+String * str_split(String * self, char c);
 
 #endif

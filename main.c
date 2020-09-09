@@ -22,4 +22,19 @@ int main() {
     str_free(&s);
     str_free(&s2);
     str_free(&a3);
+
+    String sTest = buildString("a + b + c");
+
+    String * arr = str_split(&sTest, '+');
+
+    str_free(&sTest);
+
+    for (int i = 0; i < len(arr); ++i) {
+        printf("arr[%d] = \"%s\"\n", i, str_getString(arr+i));
+    }
+
+    for (int i = 0; i < len(arr); ++i) {
+        str_free(arr+i);
+    }
+    freeArray(arr);
 }  

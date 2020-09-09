@@ -38,6 +38,19 @@ void str_free(String * self) {
     }
 }
 
+String str_copy(String * self) {
+    String s = {
+        calloc(self->__memLength, 1),
+        self->__memLength
+    };
+    if (s.__ptr == NULL) {
+        fprintf(stderr, "Could not allocate memory");
+        exit(1);
+    }
+    strcpy(s.__ptr, self->__ptr);
+    return s;
+}
+
 char * str_getString(String * self) {
     if (self->__ptr == NULL) {
         return __str_nullstring;
@@ -72,3 +85,36 @@ String str_concat(String * self, String * other) {
     return s;
 }
 
+String * str_split(String * self, char c) {
+    String copy = str_copy(self);
+
+    char * s = str_getString(&copy);
+    size_t len = str_getLen(self);
+
+    int counter = 1;
+    for (size_t i = 0; i < len; ++i) {
+        if (s[i] == c) {
+            counter += 1;
+        }
+    }
+
+    String * arr = newArray(counter, sizeof(String));
+    int index = 0;
+
+    size_t last = 0;
+    for (size_t i = 0; i < len; ++i) {
+        if (s[i] == c) {
+            s[i] = '\0';
+            String newStr = buildString(s + last);
+            arr[index] = newStr;
+            index++;
+            last = i + 1;
+        }
+    }
+
+    String newStr = buildString(s + last);
+    arr[index] = newStr;
+
+    str_free(&copy);
+    return arr;
+}
