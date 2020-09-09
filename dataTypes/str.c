@@ -2,17 +2,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "str.h"
+#include "array.h"
+
 /**
  * All internal funcs or variables should start with __str_
  * All methods should start with str_
  * 
 */
 char * __str_nullstring = "";
-
-typedef struct STRING_STRUCT {
-    char * __ptr;
-    size_t __memLength;
-} String;
 
 String buildStringNull() {
     String s = { NULL, 0 };

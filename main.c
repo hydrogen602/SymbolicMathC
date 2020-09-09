@@ -1,18 +1,25 @@
 #include "dataTypes/array.h"
 #include <stdio.h>
 
+#include "dataTypes/str.h"
+
 int main() {
 
-    int * arr = newArray(10, sizeof(int));
+    String sNUll = buildStringNull();
+    printf("String is: %s\n", str_getString(&sNUll));
 
-    for (int i = 0; i < len(arr); ++i) {
-        arr[i] = i * i;
-    }
+    String s = buildString("test");
+    printf("String is: %s\n", str_getString(&s));
 
 
-    for (int i = 0; i < len(arr); ++i) {
-        printf("arr[%d] = %d\n", i, arr[i]);
-    }
+    String s2 = buildString("abc");
 
-    freeArray(arr);
-}
+    String a3 = str_concat(&s, &s2);
+
+    printf("String is: %s\n", str_getString(&a3));
+
+    str_free(&sNUll);
+    str_free(&s);
+    str_free(&s2);
+    str_free(&a3);
+}  
