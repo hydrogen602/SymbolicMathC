@@ -4,8 +4,11 @@
 #include "str.h"
 
 // permanent value types
-#define MATH_OBJ_LONG 0
-#define MATH_OBJ_DOUBLE 1
+#define MATH_OBJ_NULL 0
+#define MATH_OBJ_LONG 1
+#define MATH_OBJ_DOUBLE 2
+
+typedef unsigned char value_type_t;
 
 #define NOTHING 0
 #define EQUATION 1
@@ -22,10 +25,10 @@ typedef struct Math_Object {
     String label;
     struct Math_Object * childA;
     struct Math_Object * childB;
+    union __MATH_OBJ_VALUE permValue;
     unsigned char childCount: 2;
     unsigned char typeTag;
-    union __MATH_OBJ_VALUE permValue;
-    unsigned char permValueType: 1;
+    value_type_t permValueType: 2;
 } math_struct;
 
 typedef math_struct * math_obj;

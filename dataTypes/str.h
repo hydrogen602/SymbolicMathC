@@ -12,7 +12,7 @@
 
 typedef struct STRING_STRUCT {
     char * __ptr;
-    size_t __memLength;
+    // size_t __memLength;
 } String;
 
 
@@ -57,6 +57,8 @@ bool str_contains(String * self, char c);
 void str_print(String * self);
 
 bool str_isInteger(String * self);
+
+long int str_toInteger(String * self);
 
 /**
  * Uses the array.h stuff!

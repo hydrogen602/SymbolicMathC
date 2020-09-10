@@ -109,7 +109,7 @@ int main() {
 
     test();
 
-    math_obj m = parseString("y = x + 3");
+    math_obj m = parseString("y = 4 + 3");
 
     math_obj_printer(m);
     putchar('\n');

@@ -1,5 +1,8 @@
 #include "mathobj.h"
 #include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include "header.h"
 
 
 math_obj buildMathObjectNull() {
@@ -13,6 +16,8 @@ math_obj buildMathObjectNull() {
     m->childB = NULL;
     m->childCount = 0;
     m->typeTag = NOTHING;
+    m->permValue.i = 0;
+    m->permValueType = MATH_OBJ_NULL;
     
     return m;
 }
@@ -26,6 +31,8 @@ void math_obj_free(math_obj self) {
 
     self->childCount = 0;
     self->typeTag = NOTHING;
+    self->permValue.i = 0;
+    self->permValueType = MATH_OBJ_NULL;
     free(self);
 }
 
@@ -37,6 +44,8 @@ math_obj __buildMathObjectCustom(String s, math_obj a, math_obj b, int childCoun
     m->childB = b;
     m->childCount = childCount;
     m->typeTag = typeTag;
+    m->permValue.i = 0;
+    m->permValueType = MATH_OBJ_NULL;
     
     return m;
 }
@@ -46,7 +55,18 @@ math_obj buildMathObjectVariable(String * label) {
 }
 
 math_obj buildMathObjectConstant(String * label) {
-    return __buildMathObjectCustom(str_move(label), NULL, NULL, 0, CONSTANT);
+    math_obj m = __buildMathObjectCustom(str_move(label), NULL, NULL, 0, CONSTANT);
+
+    long int n = str_toInteger(label);
+
+    m->permValueType = MATH_OBJ_LONG;
+    m->permValue.i = n;
+
+    return m;
+}
+
+bool math_obj_isConstant(math_obj self) {
+    return self->typeTag == CONSTANT;
 }
 
 math_obj buildMathObjectPlus(math_obj a, math_obj b) {
@@ -88,6 +108,56 @@ void math_obj_printer(math_obj self) {
         }
     }
 }
+
+math_obj __math_obj_eval_plus(math_obj self, math_obj other) {
+    assert(self->typeTag == CONSTANT && other->typeTag == CONSTANT);
+
+
+}
+
+math_obj math_obj_eval(math_obj self) {
+    assert(self != NULL);
+
+    if (self->childCount == 0) {
+        return self; // cant simplify one thing
+    }
+    elif (self->childCount == 1) {
+        self->childA = math_obj_eval(self->childA);
+        return self; // don't have any of these yet
+    }
+    elif (self->childCount == 2) {
+        self->childA = math_obj_eval(self->childA);
+        self->childB = math_obj_eval(self->childB);
+
+        switch (self->typeTag)
+        {
+        case EQUATION:
+            return self;
+            break;
+        case PLUS:
+            // analyze for possible simplification
+            if (math_obj_isConstant(self->childA) && math_obj_isConstant(self->childB)) {
+                // can be added
+                math_obj newObj = __math_obj_eval_plus(self->childA, self->childB);
+                math_obj_free(self);
+
+                return newObj;
+            }
+
+            return self;
+            break;
+        
+        default:
+            assert(false);
+            break;
+        }
+    }
+    else {
+        assert(self->childCount <= 2); // def fails
+    }
+}
+
+
 
 
 // math_obj math_obj_move(math_obj * self) {

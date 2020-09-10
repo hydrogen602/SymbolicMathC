@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <errno.h>
 
 #include "str.h"
 #include "array.h"
@@ -15,15 +16,15 @@
 char * __str_nullstring = "";
 
 String buildStringNull() {
-    String s = { NULL, 0 };
+    String s = { NULL };
     return s;
 }
 
 String buildString(char * st) {
-    String s = { NULL, 0 };
+    String s = { NULL };
 
-    s.__memLength = strlen(st) + 1;
-    s.__ptr = calloc(s.__memLength, 1);
+    size_t memLength = strlen(st) + 1;
+    s.__ptr = calloc(memLength, 1);
     if (s.__ptr == NULL) {
         fprintf(stderr, "Could not allocate memory");
         exit(1);
@@ -32,11 +33,26 @@ String buildString(char * st) {
     return s;
 }
 
+String buildStringFromInteger(long int x) {
+    String s = { NULL };
+
+    // 2^64 is 18446744073709551616 which is 20 chars
+    // 2 extra for just in case
+    size_t memLength = 22 + 1;
+    s.__ptr = calloc(memLength, 1);
+    if (s.__ptr == NULL) {
+        fprintf(stderr, "Could not allocate memory");
+        exit(1);
+    }
+    sprintf(s.__ptr, "%ld", x);
+    return s;
+}
+
 void str_free(String * self) {
     if (self->__ptr != NULL) {
         free(self->__ptr);
         self->__ptr = NULL;
-        self->__memLength = 0;
+        //self->__memLength = 0;
     }
 }
 
@@ -64,8 +80,8 @@ void freeStringArray(StringArray * arrPtr) {
 
 String str_copy(String * self) {
     String s = {
-        calloc(self->__memLength, 1),
-        self->__memLength
+        calloc(str_getLen(self) + 1, 1),
+        //self->__memLength
     };
     if (s.__ptr == NULL) {
         fprintf(stderr, "Could not allocate memory");
@@ -79,11 +95,11 @@ String str_move(String * self) {
     // deletes the old to avoid dangling pointers
     String s = {
         self->__ptr,
-        self->__memLength
+        //self->__memLength
     };
 
     self->__ptr = NULL;
-    self->__memLength = 0;
+    //self->__memLength = 0;
 
     return s;
 }
@@ -107,8 +123,9 @@ size_t str_getLen(String * self) {
 }
 
 String str_filterOutChar(String * self, char c) {
-    size_t newLen = self->__memLength;
+    // size_t newLen = self->__memLength;
     size_t stringLen = str_getLen(self);
+    size_t newLen = stringLen + 1;
     char * str = str_getString(self);
     for (int i = 0; i < stringLen; ++i) {
         if (str[i] == c) {
@@ -117,8 +134,7 @@ String str_filterOutChar(String * self, char c) {
     }
 
     String s = {
-        calloc(newLen, 1),
-        newLen
+        calloc(newLen, 1)
     };
     if (s.__ptr == NULL) {
         fprintf(stderr, "Could not allocate memory");
@@ -146,8 +162,7 @@ String str_filterOutChar(String * self, char c) {
 String str_concat(String * self, String * other) {
     size_t newLen = str_getLen(self) + str_getLen(other) + 1;
     String s = {
-        calloc(newLen, 1),
-        newLen
+        calloc(newLen, 1)
     };
     if (s.__ptr == NULL) {
         fprintf(stderr, "Could not allocate memory");
@@ -219,4 +234,28 @@ bool str_isInteger(String * self) {
         }
     }
     return true;
+}
+
+long int str_toInteger(String * self) {
+    char * ptr;
+    long int n = strtol(str_getString(self), &ptr, 10);
+
+    if (n == 0) {
+        if (errno == EINVAL) {
+            fprintf(stderr, "Conversion error occurred: %d\n", errno);
+            exit(1);
+        }
+
+        if (errno == ERANGE) {
+            fprintf(stderr, "The value provided was out of range: %s\n", str_getString(self));
+            exit(1);
+        }
+
+        if (strlen(ptr) > 0) {
+            fprintf(stderr, "Integer Parse Error in string \"%s\": offending bit = \"%s\"\n", str_getString(self), ptr);
+            exit(1);
+        }
+    }
+
+    return n;
 }
