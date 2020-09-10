@@ -38,6 +38,8 @@ String buildStringNull();
 
 String buildString(char * st);
 
+String buildStringFromInteger(long int x);
+
 void str_free(String * self);
 
 String str_copy(String * self);

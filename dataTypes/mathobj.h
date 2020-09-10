@@ -47,4 +47,6 @@ void math_obj_free(math_obj self);
 
 void math_obj_printer(math_obj self);
 
+math_obj math_obj_eval(math_obj self);
+
 #endif

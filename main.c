@@ -114,7 +114,14 @@ int main() {
     math_obj_printer(m);
     putchar('\n');
 
+    m = math_obj_eval(m);
+
+    math_obj_printer(m);
+    putchar('\n');
+
     math_obj_free(m);
+
+
 }
 
 int test() {

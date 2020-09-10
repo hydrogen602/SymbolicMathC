@@ -57,7 +57,17 @@ math_obj buildMathObjectVariable(String * label) {
 math_obj buildMathObjectConstant(String * label) {
     math_obj m = __buildMathObjectCustom(str_move(label), NULL, NULL, 0, CONSTANT);
 
-    long int n = str_toInteger(label);
+    long int n = str_toInteger(& m->label);
+
+    m->permValueType = MATH_OBJ_LONG;
+    m->permValue.i = n;
+
+    return m;
+}
+
+math_obj buildMathObjectConstantLong(long int n) {
+    String label = buildStringFromInteger(n);
+    math_obj m = __buildMathObjectCustom(str_move(&label), NULL, NULL, 0, CONSTANT);
 
     m->permValueType = MATH_OBJ_LONG;
     m->permValue.i = n;
@@ -111,11 +121,18 @@ void math_obj_printer(math_obj self) {
 
 math_obj __math_obj_eval_plus(math_obj self, math_obj other) {
     assert(self->typeTag == CONSTANT && other->typeTag == CONSTANT);
+    assert(self->permValueType == MATH_OBJ_LONG && self->permValueType == MATH_OBJ_LONG);
 
+    long int val = self->permValue.i + other->permValue.i;
 
+    printf("%ld\n", val);
+
+    return buildMathObjectConstantLong(val);
 }
 
 math_obj math_obj_eval(math_obj self) {
+    // if not returning self, free self!!!
+
     assert(self != NULL);
 
     if (self->childCount == 0) {
@@ -155,6 +172,8 @@ math_obj math_obj_eval(math_obj self) {
     else {
         assert(self->childCount <= 2); // def fails
     }
+
+    return self;
 }
 
 

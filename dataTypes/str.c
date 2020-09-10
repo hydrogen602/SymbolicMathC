@@ -255,6 +255,11 @@ long int str_toInteger(String * self) {
             fprintf(stderr, "Integer Parse Error in string \"%s\": offending bit = \"%s\"\n", str_getString(self), ptr);
             exit(1);
         }
+
+        if (str_getLen(self) == 0) {
+            fprintf(stderr, "Cannot convert an empty string to integer\n");
+            exit(1);
+        }
     }
 
     return n;
