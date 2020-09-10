@@ -14,8 +14,12 @@ DATA_TYPES := $(patsubst %.c,%.o,$(wildcard dataTypes/*.c))
 
 .PHONY: clean
 
-all: $(DATA_TYPES) main.o
+all: $(DATA_TYPES) $(HEADERS) main.o
 	$(CC) -o main $(DATA_TYPES) main.o $(LDLIBS)
+
+test: clean $(DATA_TYPES) $(HEADERS) test.o
+	$(CC) -o test $(DATA_TYPES) test.o $(LDLIBS)
+	./test
 
 clean:
 	rm -f main *.o dataTypes/*.o
