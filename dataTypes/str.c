@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "str.h"
 #include "array.h"
@@ -139,4 +140,17 @@ String * str_split(String * self, char c) {
 
     str_free(&copy);
     return arr;
+}
+
+bool str_contains(String * self, char c) {
+    char * s = str_getString(self);
+    size_t len = str_getLen(self);
+
+    for (size_t i = 0; i < len; ++i) {
+        if (s[i] == c) {
+            return true;
+        }
+    }
+    return false;
+
 }

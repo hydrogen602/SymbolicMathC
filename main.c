@@ -3,8 +3,49 @@
 
 #include "dataTypes/str.h"
 
-int main() {
+int test();
 
+int parseString(char * c) {
+    String s = buildString(c);
+
+    StringArray arr = str_split(&s, '=');
+
+    switch (len(arr))
+    {
+    case 0:
+        fprintf(stderr, "Illegal State at line %d in %s\n", __LINE__, __FILE__);
+        exit(1);
+        break;
+    case 1:
+        // expression
+        printf("Expression\n");
+        break;
+    
+    case 2:
+        // eq
+        printf("Equation\n");
+        break;
+    
+    default:
+        fprintf(stderr, "Parse Error at line %d in %s\n", __LINE__, __FILE__);
+        exit(1);
+        break;
+    }
+
+
+
+    return 0;
+}
+
+int main() {
+    test();
+
+    parseString("y + x + 3");
+}
+
+
+
+int test() {
     String sNUll = buildStringNull();
     printf("String is: %s\n", str_getString(&sNUll));
 
@@ -34,4 +75,6 @@ int main() {
     }
 
     freeStringArray(&arr);
-}  
+
+    return 0;
+}

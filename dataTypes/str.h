@@ -2,6 +2,7 @@
 #define STR_H_
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 /**
  * All internal funcs or variables should start with __str_
@@ -46,6 +47,8 @@ char * str_getString(String * self);
 size_t str_getLen(String * self);
 
 String str_concat(String * self, String * other);
+
+bool str_contains(String * self, char c);
 
 /**
  * Uses the array.h stuff!
