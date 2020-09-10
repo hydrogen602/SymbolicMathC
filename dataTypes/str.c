@@ -38,6 +38,28 @@ void str_free(String * self) {
     }
 }
 
+/**
+ * Creates a StringArray
+ */
+StringArray newStringArray(size_t length) {
+    return newArray(length, sizeof(String));
+}
+
+/**
+ * Frees all the memory.
+ * arrPtr - a pointer to the array (so a pointer to a pointer)
+ * This is so it can set the array to NULL and avoid dangling ptrs.
+ */
+void freeStringArray(StringArray * arrPtr) {
+    StringArray arr = *arrPtr;
+    for (int i = 0; i < len(arr); ++i) {
+        str_free(arr+i);
+    }
+    freeArray(arr);
+    *arrPtr = NULL;
+}
+
+
 String str_copy(String * self) {
     String s = {
         calloc(self->__memLength, 1),
@@ -98,7 +120,7 @@ String * str_split(String * self, char c) {
         }
     }
 
-    String * arr = newArray(counter, sizeof(String));
+    String * arr = newStringArray(counter);
     int index = 0;
 
     size_t last = 0;

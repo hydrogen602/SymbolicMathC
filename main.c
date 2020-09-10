@@ -33,8 +33,5 @@ int main() {
         printf("arr[%d] = \"%s\"\n", i, str_getString(arr+i));
     }
 
-    for (int i = 0; i < len(arr); ++i) {
-        str_free(arr+i);
-    }
-    freeArray(arr);
+    freeStringArray(&arr);
 }  
