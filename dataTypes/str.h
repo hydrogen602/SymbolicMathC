@@ -68,4 +68,10 @@ long int str_toInteger(String * self);
  */
 StringArray str_split(String * self, char c);
 
+/**
+ * Uses the array.h stuff!
+ * Also each value must be freed individually!
+ */
+StringArray str_rsplit2(String * self, char c)
+
 #endif

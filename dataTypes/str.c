@@ -208,6 +208,40 @@ String * str_split(String * self, char c) {
     return arr;
 }
 
+StringArray str_rsplit2(String * self, char c) {
+    String copy = str_copy(self);
+
+    char * s = str_getString(&copy);
+    size_t len = str_getLen(self);
+
+    int counter = 1;
+    for (size_t i = len - 1; i >= 0; --i) {
+        if (s[i] == c) {
+            counter = 2;
+            break;
+        }
+    }
+
+    String * arr = newStringArray(counter);
+    int index = 0;
+
+    for (size_t i = len - 1; i >= 0; --i) {
+        if (s[i] == c) {
+            s[i] = '\0';
+            String newStr = buildString(s + i + 1);
+            arr[index] = newStr;
+            index++;
+            break; // max array len 2
+        }
+    }
+
+    String newStr = buildString(s);
+    arr[index] = newStr;
+
+    str_free(&copy);
+    return arr;
+}
+
 bool str_contains(String * self, char c) {
     char * s = str_getString(self);
     size_t len = str_getLen(self);
