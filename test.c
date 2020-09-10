@@ -161,5 +161,18 @@ void testStr() {
         str_free(&s2);
     }
 
+    {
+        puts("Testing str_rsplit2");
+
+        String s = buildString("abc");
+        
+        StringArray arr = str_rsplit2(&s, 'd');
+
+        assert2(len(arr) == 1);
+        assert2(str_compare(arr[0], "abc"));
+
+        str_free(&s);
+    }
+
 
 }

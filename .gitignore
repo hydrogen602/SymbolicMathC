@@ -1,3 +1,5 @@
 a.out
 *.o
 main
+test
+.vscode/

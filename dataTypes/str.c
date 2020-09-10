@@ -215,7 +215,7 @@ StringArray str_rsplit2(String * self, char c) {
     size_t len = str_getLen(self);
 
     int counter = 1;
-    for (size_t i = len - 1; i >= 0; --i) {
+    for (int i = len - 1; i >= 0; --i) {
         if (s[i] == c) {
             counter = 2;
             break;
@@ -225,7 +225,7 @@ StringArray str_rsplit2(String * self, char c) {
     String * arr = newStringArray(counter);
     int index = 0;
 
-    for (size_t i = len - 1; i >= 0; --i) {
+    for (int i = len - 1; i >= 0; --i) {
         if (s[i] == c) {
             s[i] = '\0';
             String newStr = buildString(s + i + 1);

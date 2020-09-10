@@ -19,10 +19,9 @@ all: $(DATA_TYPES) $(HEADERS) main.o
 
 test: clean $(DATA_TYPES) $(HEADERS) test.o
 	$(CC) -o test $(DATA_TYPES) test.o $(LDLIBS)
-	./test
 
 clean:
-	rm -f main *.o dataTypes/*.o
+	rm -f main test *.o dataTypes/*.o
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $*.c -o $@

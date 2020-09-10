@@ -9,7 +9,7 @@
 int test();
 
 math_obj parseHelper(String s) {
-    StringArray arr = str_split(&s, '+');
+    StringArray arr = str_rsplit2(&s, '+');
 
     math_obj result = NULL;
 
@@ -109,7 +109,7 @@ int main() {
 
     test();
 
-    math_obj m = parseString("y = 4 + 3");
+    math_obj m = parseString("y = 4 + 3 + 2 + x + 5");
 
     math_obj_printer(m);
     putchar('\n');
