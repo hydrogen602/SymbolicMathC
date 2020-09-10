@@ -29,4 +29,6 @@ math_obj buildMathObjectPlus(math_obj a, math_obj b);
 
 void math_obj_free(math_obj self);
 
+void math_obj_printer(math_obj self);
+
 #endif

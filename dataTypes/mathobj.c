@@ -4,7 +4,6 @@
 
 math_obj buildMathObjectNull() {
     math_obj m = malloc(sizeof(math_struct));
-    puts("malloc");
     if (m == NULL) {
         fprintf(stderr, "Could not allocate memory");
         exit(1);
@@ -20,8 +19,6 @@ math_obj buildMathObjectNull() {
 
 void math_obj_free(math_obj self) {
     if (self == NULL) return;
-
-    printf("Freeing stuff\n");
 
     str_free(& (self->label));
     math_obj_free(self->childA);
@@ -40,8 +37,6 @@ math_obj __buildMathObjectCustom(String s, math_obj a, math_obj b, int childCoun
     m->childB = b;
     m->childCount = childCount;
     m->typeTag = typeTag;
-
-    printf("created with label %s\n", str_getString(&s));
     
     return m;
 }
@@ -56,6 +51,38 @@ math_obj buildMathObjectPlus(math_obj a, math_obj b) {
 
 math_obj buildMathObjectEquation(math_obj a, math_obj b) {
     return __buildMathObjectCustom(buildString("="), a, b, 2, PLUS);
+}
+
+void math_obj_printer(math_obj self) {
+    if (self == NULL) {
+        printf("NULL ");
+    }
+    else {
+        if (self->childCount == 0) {
+            str_print(& self->label);
+            putchar(' ');
+        }
+        else if (self->childCount == 1)
+        {
+            str_print(& self->label);
+            putchar(' ');
+
+            math_obj_printer(self->childA);
+        }
+        else if (self->childCount == 2)
+        {
+            math_obj_printer(self->childA);
+
+            str_print(& self->label);
+            putchar(' ');
+
+            math_obj_printer(self->childB);
+        }
+        else {
+            fprintf(stderr, "Illegal value for childCount of struct Math_Object: Expected 0-2, but got %d at line %d in %s\n", self->childCount, __LINE__, __FILE__);
+            exit(1);
+        }
+    }
 }
 
 

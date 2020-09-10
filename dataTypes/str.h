@@ -44,6 +44,8 @@ String str_copy(String * self);
 
 String str_move(String * self);
 
+String str_filterOutChar(String * self, char c);
+
 char * str_getString(String * self);
 
 size_t str_getLen(String * self);
@@ -51,6 +53,8 @@ size_t str_getLen(String * self);
 String str_concat(String * self, String * other);
 
 bool str_contains(String * self, char c);
+
+void str_print(String * self);
 
 /**
  * Uses the array.h stuff!

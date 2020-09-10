@@ -51,9 +51,12 @@ math_obj parseString(char * c) {
     {
         String s = buildString(c);
 
-        arr = str_split(&s, '=');
+        String s2 = str_filterOutChar(&s, ' ');
+
+        arr = str_split(&s2, '=');
 
         str_free(&s);
+        str_free(&s2);
     }
 
     math_obj result = NULL;
@@ -96,6 +99,9 @@ int main() {
 
     math_obj m = parseString("y = x + 3");
 
+    math_obj_printer(m);
+    putchar('\n');
+
     math_obj_free(m);
 }
 
@@ -109,7 +115,7 @@ int test() {
     printf("String is: %s\n", str_getString(&s));
 
 
-    String s2 = buildString("abc");
+    String s2 = buildString("abc_some_stuff");
 
     String a3 = str_concat(&s, &s2);
 
@@ -118,7 +124,13 @@ int test() {
     str_free(&sNUll);
     str_free(&s);
     str_free(&s2);
+
+    String a4 = str_filterOutChar(&a3, 's');
+
+    printf("String is: %s\n", str_getString(&a4));
+
     str_free(&a3);
+    str_free(&a4);
 
     String sTest = buildString("a + b + c");
 

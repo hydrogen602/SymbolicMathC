@@ -105,6 +105,43 @@ size_t str_getLen(String * self) {
     }
 }
 
+String str_filterOutChar(String * self, char c) {
+    size_t newLen = self->__memLength;
+    size_t stringLen = str_getLen(self);
+    char * str = str_getString(self);
+    for (int i = 0; i < stringLen; ++i) {
+        if (str[i] == c) {
+            newLen--;
+        }
+    }
+
+    String s = {
+        calloc(newLen, 1),
+        newLen
+    };
+    if (s.__ptr == NULL) {
+        fprintf(stderr, "Could not allocate memory");
+        exit(1);
+    }
+
+    int index = 0;
+    for (int i = 0; i < stringLen; ++i) {
+        if (str[i] != c) {
+            s.__ptr[index] = str[i];
+            index++;
+        }
+    }
+
+    if (index + 1 != newLen) {
+        fprintf(stderr, "Assertion Error at %d in %s\n", __LINE__, __FILE__);
+        exit(1);
+    }
+
+    s.__ptr[index + 1] = '\0';
+
+    return s;
+}
+
 String str_concat(String * self, String * other) {
     size_t newLen = str_getLen(self) + str_getLen(other) + 1;
     String s = {
@@ -166,4 +203,8 @@ bool str_contains(String * self, char c) {
     }
     return false;
 
+}
+
+void str_print(String * self) {
+    printf("%s", str_getString(self));
 }
