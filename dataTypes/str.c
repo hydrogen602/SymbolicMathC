@@ -74,6 +74,19 @@ String str_copy(String * self) {
     return s;
 }
 
+String str_move(String * self) {
+    // deletes the old to avoid dangling pointers
+    String s = {
+        self->__ptr,
+        self->__memLength
+    };
+
+    self->__ptr = NULL;
+    self->__memLength = 0;
+
+    return s;
+}
+
 char * str_getString(String * self) {
     if (self->__ptr == NULL) {
         return __str_nullstring;

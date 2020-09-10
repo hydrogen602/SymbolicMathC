@@ -3,6 +3,8 @@
 
 #include "dataTypes/str.h"
 
+#include "dataTypes/mathobj.h"
+
 int test();
 
 int parseString(char * c) {

@@ -42,6 +42,8 @@ void str_free(String * self);
 
 String str_copy(String * self);
 
+String str_move(String * self);
+
 char * str_getString(String * self);
 
 size_t str_getLen(String * self);
