@@ -4,8 +4,10 @@
 #include "str.h"
 
 #define NOTHING 0
-#define VARIABLE 1
-#define PLUS 2
+#define EQUATION 1
+#define VARIABLE 2
+#define PLUS 3
+
 
 typedef struct Math_Object {
     String label;
@@ -13,12 +15,18 @@ typedef struct Math_Object {
     struct Math_Object * childB;
     char childCount;
     char typeTag;
-} math_obj;
+} math_struct;
+
+typedef math_struct * math_obj;
 
 math_obj buildMathObjectNull();
 
 math_obj buildMathObjectVariable(String * label);
 
-math_obj buildMathObjectPlus(math_obj * a, math_obj * b);
+math_obj buildMathObjectEquation(math_obj a, math_obj b);
+
+math_obj buildMathObjectPlus(math_obj a, math_obj b);
+
+void math_obj_free(math_obj self);
 
 #endif

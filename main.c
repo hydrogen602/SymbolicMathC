@@ -7,10 +7,10 @@
 
 int test();
 
-int parseString(char * c) {
-    String s = buildString(c);
+math_obj parseHelper(String s) {
+    StringArray arr = str_split(&s, '+');
 
-    StringArray arr = str_split(&s, '=');
+    math_obj result = NULL;
 
     switch (len(arr))
     {
@@ -20,12 +20,18 @@ int parseString(char * c) {
         break;
     case 1:
         // expression
-        printf("Expression\n");
+
+        printf("Var\n");
+        result = buildMathObjectVariable(arr + 0);
         break;
     
     case 2:
         // eq
-        printf("Equation\n");
+        printf("Sum\n");
+        math_obj a = parseHelper(arr[0]);
+        math_obj b = parseHelper(arr[1]);
+
+        result = buildMathObjectPlus(a, b);
         break;
     
     default:
@@ -34,15 +40,63 @@ int parseString(char * c) {
         break;
     }
 
+    freeStringArray(&arr);
 
+    return result;
+}
 
-    return 0;
+math_obj parseString(char * c) {
+    StringArray arr;
+
+    {
+        String s = buildString(c);
+
+        arr = str_split(&s, '=');
+
+        str_free(&s);
+    }
+
+    math_obj result = NULL;
+
+    switch (len(arr))
+    {
+    case 0:
+        fprintf(stderr, "Illegal State at line %d in %s\n", __LINE__, __FILE__);
+        exit(1);
+        break;
+    case 1:
+        // expression
+
+        printf("Expression\n");
+        result = parseHelper(arr[0]);
+        break;
+    
+    case 2:
+        // eq
+        printf("Equation\n");
+        math_obj a = parseHelper(arr[0]);
+        math_obj b = parseHelper(arr[1]);
+
+        result = buildMathObjectEquation(a, b);
+        break;
+    
+    default:
+        fprintf(stderr, "Parse Error at line %d in %s\n", __LINE__, __FILE__);
+        exit(1);
+        break;
+    }
+
+    freeStringArray(&arr);
+
+    return result;
 }
 
 int main() {
     test();
 
-    parseString("y + x + 3");
+    math_obj m = parseString("y = x + 3");
+
+    math_obj_free(m);
 }
 
 
