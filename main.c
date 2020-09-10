@@ -1,9 +1,10 @@
-#include "dataTypes/array.h"
 #include <stdio.h>
-
+#include "dataTypes/array.h"
 #include "dataTypes/str.h"
-
 #include "dataTypes/mathobj.h"
+
+#include <assert.h>
+
 
 int test();
 
@@ -21,8 +22,15 @@ math_obj parseHelper(String s) {
     case 1:
         // expression
 
-        printf("Var\n");
-        result = buildMathObjectVariable(arr + 0);
+        
+        if ( str_isInteger(arr + 0) ) {
+            printf("Constant\n");
+            result = buildMathObjectConstant(arr + 0);
+        } 
+        else {
+            printf("Var\n");
+            result = buildMathObjectVariable(arr + 0);
+        }
         break;
     
     case 2:
@@ -95,6 +103,10 @@ math_obj parseString(char * c) {
 }
 
 int main() {
+    printf("Size of String: %lu\n", sizeof(String));
+    printf("Size of Union: %lu\n", sizeof(union __MATH_OBJ_VALUE));
+    printf("Size of Struct: %lu\n", sizeof(math_struct));
+
     test();
 
     math_obj m = parseString("y = x + 3");
@@ -104,8 +116,6 @@ int main() {
 
     math_obj_free(m);
 }
-
-
 
 int test() {
     String sNUll = buildStringNull();

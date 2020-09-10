@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #include "str.h"
 #include "array.h"
@@ -202,9 +203,20 @@ bool str_contains(String * self, char c) {
         }
     }
     return false;
-
 }
 
 void str_print(String * self) {
     printf("%s", str_getString(self));
+}
+
+bool str_isInteger(String * self) {
+    char * s = str_getString(self);
+    size_t len = str_getLen(self);
+
+    for (size_t i = 0; i < len; ++i) {
+        if (!isdigit(s[i])) {
+            return false;
+        }
+    }
+    return true;
 }

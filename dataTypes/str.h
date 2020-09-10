@@ -56,6 +56,8 @@ bool str_contains(String * self, char c);
 
 void str_print(String * self);
 
+bool str_isInteger(String * self);
+
 /**
  * Uses the array.h stuff!
  * Also each value must be freed individually!

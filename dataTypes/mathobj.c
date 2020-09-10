@@ -45,6 +45,10 @@ math_obj buildMathObjectVariable(String * label) {
     return __buildMathObjectCustom(str_move(label), NULL, NULL, 0, VARIABLE);
 }
 
+math_obj buildMathObjectConstant(String * label) {
+    return __buildMathObjectCustom(str_move(label), NULL, NULL, 0, CONSTANT);
+}
+
 math_obj buildMathObjectPlus(math_obj a, math_obj b) {
     return __buildMathObjectCustom(buildString("+"), a, b, 2, PLUS);
 }
