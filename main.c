@@ -106,7 +106,7 @@ int main() {
 
     test();
 
-    math_obj m = parseString("y = 4 + 3 + 2 + x + 5 + x");
+    math_obj m = parseString("y = 4 + 3 + 2 + x + - 5 + x");
 
     math_obj_debug_printer(m);
     putchar('\n');

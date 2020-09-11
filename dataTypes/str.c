@@ -263,6 +263,9 @@ bool str_isInteger(String * self) {
     size_t len = str_getLen(self);
 
     for (size_t i = 0; i < len; ++i) {
+        if (i == 0 && s[i] == '-') {
+            continue; // minus sign allowed at the beginning
+        }
         if (!isdigit(s[i])) {
             return false;
         }
@@ -298,3 +301,8 @@ long int str_toInteger(String * self) {
 
     return n;
 }
+
+// String str_replace(String * self, char * replaceThis, char * replaceWith) {
+//     int delta = strlen(replaceWith) - strlen(replaceThis);
+//     // thats increase per match
+// }
