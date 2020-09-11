@@ -2,6 +2,9 @@
 #define MATH_OBJ_H_
 
 #include "str.h"
+#include "array.h"
+
+#define newMathObjectArray(c) newArray(c, sizeof(math_obj))
 
 // permanent value types
 #define MATH_OBJ_NULL 0
@@ -23,15 +26,14 @@ union __MATH_OBJ_VALUE {
 
 typedef struct Math_Object {
     String label;
-    struct Math_Object * childA;
-    struct Math_Object * childB;
+    struct Math_Object ** children;
     union __MATH_OBJ_VALUE permValue;
-    unsigned char childCount: 2;
     unsigned char typeTag;
     value_type_t permValueType: 2;
 } math_struct;
 
 typedef math_struct * math_obj;
+typedef math_obj * math_obj_array;
 
 math_obj buildMathObjectNull();
 
@@ -41,11 +43,13 @@ math_obj buildMathObjectConstant(String * label);
 
 math_obj buildMathObjectEquation(math_obj a, math_obj b);
 
-math_obj buildMathObjectPlus(math_obj a, math_obj b);
+math_obj buildMathObjectPlus(math_obj_array arr);
 
 void math_obj_free(math_obj self);
 
 void math_obj_printer(math_obj self);
+
+void math_obj_debug_printer(math_obj self);
 
 math_obj math_obj_eval(math_obj self);
 

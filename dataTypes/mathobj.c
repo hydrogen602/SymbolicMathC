@@ -3,6 +3,7 @@
 #include <errno.h>
 #include <string.h>
 #include "header.h"
+#include "array.h"
 
 
 math_obj buildMathObjectNull() {
@@ -12,9 +13,7 @@ math_obj buildMathObjectNull() {
         exit(1);
     }
     m->label = buildStringNull();
-    m->childA = NULL;
-    m->childB = NULL;
-    m->childCount = 0;
+    m->children = NULL;
     m->typeTag = NOTHING;
     m->permValue.i = 0;
     m->permValueType = MATH_OBJ_NULL;
@@ -26,23 +25,23 @@ void math_obj_free(math_obj self) {
     if (self == NULL) return;
 
     str_free(& (self->label));
-    math_obj_free(self->childA);
-    math_obj_free(self->childB);
 
-    self->childCount = 0;
+    for (int i = 0; i < len(self->children); ++i) {
+        math_obj_free(self->children[i]);
+    }
+    freeArray(self->children);
+    
     self->typeTag = NOTHING;
     self->permValue.i = 0;
     self->permValueType = MATH_OBJ_NULL;
     free(self);
 }
 
-math_obj __buildMathObjectCustom(String s, math_obj a, math_obj b, int childCount, int typeTag) {
+math_obj __buildMathObjectCustom(String s, math_obj_array arr, int typeTag) {
     math_obj m = buildMathObjectNull();
 
     m->label = s;
-    m->childA = a;
-    m->childB = b;
-    m->childCount = childCount;
+    m->children = arr;
     m->typeTag = typeTag;
     m->permValue.i = 0;
     m->permValueType = MATH_OBJ_NULL;
@@ -51,11 +50,11 @@ math_obj __buildMathObjectCustom(String s, math_obj a, math_obj b, int childCoun
 }
 
 math_obj buildMathObjectVariable(String * label) {
-    return __buildMathObjectCustom(str_move(label), NULL, NULL, 0, VARIABLE);
+    return __buildMathObjectCustom(str_move(label), NULL, VARIABLE);
 }
 
 math_obj buildMathObjectConstant(String * label) {
-    math_obj m = __buildMathObjectCustom(str_move(label), NULL, NULL, 0, CONSTANT);
+    math_obj m = __buildMathObjectCustom(str_move(label), NULL, CONSTANT);
 
     long int n = str_toInteger(& m->label);
 
@@ -67,7 +66,7 @@ math_obj buildMathObjectConstant(String * label) {
 
 math_obj buildMathObjectConstantLong(long int n) {
     String label = buildStringFromInteger(n);
-    math_obj m = __buildMathObjectCustom(str_move(&label), NULL, NULL, 0, CONSTANT);
+    math_obj m = __buildMathObjectCustom(str_move(&label), NULL, CONSTANT);
 
     m->permValueType = MATH_OBJ_LONG;
     m->permValue.i = n;
@@ -79,12 +78,15 @@ bool math_obj_isConstant(math_obj self) {
     return self->typeTag == CONSTANT;
 }
 
-math_obj buildMathObjectPlus(math_obj a, math_obj b) {
-    return __buildMathObjectCustom(buildString("+"), a, b, 2, PLUS);
+math_obj buildMathObjectPlus(math_obj_array arr) {
+    return __buildMathObjectCustom(buildString("+"), arr, PLUS);
 }
 
 math_obj buildMathObjectEquation(math_obj a, math_obj b) {
-    return __buildMathObjectCustom(buildString("="), a, b, 2, PLUS);
+    math_obj_array mArr = newMathObjectArray(2);
+    mArr[0] = a;
+    mArr[1] = b;
+    return __buildMathObjectCustom(buildString("="), mArr, PLUS);
 }
 
 void math_obj_printer(math_obj self) {
@@ -92,29 +94,57 @@ void math_obj_printer(math_obj self) {
         printf("NULL ");
     }
     else {
-        if (self->childCount == 0) {
+        if (len(self->children) == 0) {
             str_print(& self->label);
             putchar(' ');
         }
-        else if (self->childCount == 1)
+        else if (len(self->children) == 1)
         {
             str_print(& self->label);
             putchar(' ');
 
-            math_obj_printer(self->childA);
-        }
-        else if (self->childCount == 2)
-        {
-            math_obj_printer(self->childA);
-
-            str_print(& self->label);
-            putchar(' ');
-
-            math_obj_printer(self->childB);
+            math_obj_printer(self->children[0]);
         }
         else {
-            fprintf(stderr, "Illegal value for childCount of struct Math_Object: Expected 0-2, but got %d at line %d in %s\n", self->childCount, __LINE__, __FILE__);
-            exit(1);
+            math_obj_printer(self->children[0]);
+            for (int i = 1; i < len(self->children); ++i) {
+                str_print(& self->label);
+                putchar(' ');
+
+                math_obj_printer(self->children[i]);
+            }
+        }
+    }
+}
+
+void math_obj_debug_printer(math_obj self) {
+    if (self == NULL) {
+        printf("NULL ");
+    }
+    else {
+        if (len(self->children) == 0) {
+            str_print(& self->label);
+            putchar(' ');
+        }
+        else if (len(self->children) == 1)
+        {
+            printf("( ");
+            str_print(& self->label);
+            putchar(' ');
+
+            math_obj_debug_printer(self->children[0]);
+            printf(") ");
+        }
+        else {
+            printf("( ");
+            math_obj_debug_printer(self->children[0]);
+            for (int i = 1; i < len(self->children); ++i) {
+                str_print(& self->label);
+                putchar(' ');
+
+                math_obj_debug_printer(self->children[i]);
+            }
+            printf(") ");
         }
     }
 }
@@ -130,21 +160,53 @@ math_obj __math_obj_eval_plus(math_obj self, math_obj other) {
     return buildMathObjectConstantLong(val);
 }
 
+/**
+ * Frees the incoming array if creating a new one
+ */
+math_obj_array __math_obj_takeOutNull(math_obj_array m) {
+    int len2 = len(m);
+    for (int i = 0; i < len(m); ++i) {
+        if (m[i] == NULL) {
+            len2--;
+        }
+    }
+
+    if (len2 == 0) {
+        return m;
+    }
+
+    math_obj_array out = newMathObjectArray(len2);
+
+    int index = 0;
+    for (int i = 0; i < len(m); ++i) {
+        if (m[i] != NULL) {
+            out[index] = m[i];
+            index++;
+        }
+    }
+
+    freeArray(m);
+    return out;
+}
+
 math_obj math_obj_eval(math_obj self) {
     // if not returning self, free self!!!
 
     assert(self != NULL);
 
-    if (self->childCount == 0) {
+    int childCount = len(self->children);
+
+    if (childCount == 0) {
         return self; // cant simplify one thing
     }
-    elif (self->childCount == 1) {
-        self->childA = math_obj_eval(self->childA);
+    elif (childCount == 1) {
+        self->children[0] = math_obj_eval(self->children[0]);
         return self; // don't have any of these yet
     }
-    elif (self->childCount == 2) {
-        self->childA = math_obj_eval(self->childA);
-        self->childB = math_obj_eval(self->childB);
+    else {
+        for (int i = 0; i < childCount; ++i) {
+            self->children[i] = math_obj_eval(self->children[i]);
+        }
 
         switch (self->typeTag)
         {
@@ -152,13 +214,41 @@ math_obj math_obj_eval(math_obj self) {
             return self;
             break;
         case PLUS:
+            assert(childCount > 1);
             // analyze for possible simplification
-            if (math_obj_isConstant(self->childA) && math_obj_isConstant(self->childB)) {
-                // can be added
-                math_obj newObj = __math_obj_eval_plus(self->childA, self->childB);
-                math_obj_free(self);
+            math_obj last = NULL;
+            int indexOfFirst = -1;
 
-                return newObj;
+            for (int i = 0; i < childCount; ++i) {
+                if (math_obj_isConstant(self->children[i])) {
+                    if (last == NULL) {
+                        last = self->children[i];
+                        self->children[i] = NULL;
+                        indexOfFirst = i;
+                    }
+                    else {
+                        math_obj newlast = __math_obj_eval_plus(last, self->children[i]);
+                        math_obj_free(last);
+                        math_obj_free(self->children[i]);
+                        self->children[i] = NULL;
+
+                        last = newlast;
+                    }
+                }
+            }
+
+            if (last != NULL) {
+                self->children[indexOfFirst] = last;
+            }
+
+            self->children = __math_obj_takeOutNull(self->children);
+
+            if (len(self->children) == 1) {
+                // only one left
+                math_obj tmp = self->children[0];
+                self->children[0] = NULL;
+                math_obj_free(self);
+                return tmp;
             }
 
             return self;
@@ -168,9 +258,6 @@ math_obj math_obj_eval(math_obj self) {
             assert(false);
             break;
         }
-    }
-    else {
-        assert(self->childCount <= 2); // def fails
     }
 
     return self;
