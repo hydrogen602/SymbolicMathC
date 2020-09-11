@@ -9,7 +9,7 @@
 int test();
 
 math_obj parseHelper(String s) {
-    StringArray arr = str_rsplit2(&s, '+');
+    StringArray arr = str_split(&s, '+');
 
     math_obj result = NULL;
 
@@ -33,18 +33,15 @@ math_obj parseHelper(String s) {
         }
         break;
     
-    case 2:
+    default:
         // eq
         printf("Sum\n");
-        math_obj a = parseHelper(arr[0]);
-        math_obj b = parseHelper(arr[1]);
+        math_obj_array mathArr = newMathObjectArray(len(arr));
+        for (int i = 0; i < len(arr); ++i) {
+            mathArr[i] = parseHelper(arr[i]);
+        }
 
-        result = buildMathObjectPlus(a, b);
-        break;
-    
-    default:
-        fprintf(stderr, "Parse Error at line %d in %s\n", __LINE__, __FILE__);
-        exit(1);
+        result = buildMathObjectPlus(mathArr);
         break;
     }
 
@@ -109,14 +106,14 @@ int main() {
 
     test();
 
-    math_obj m = parseString("y = 4 + 3 + 2 + x + 5");
+    math_obj m = parseString("y = 4 + 3 + 2 + x + - 5 + x");
 
-    math_obj_printer(m);
+    math_obj_debug_printer(m);
     putchar('\n');
 
     m = math_obj_eval(m);
 
-    math_obj_printer(m);
+    math_obj_debug_printer(m);
     putchar('\n');
 
     math_obj_free(m);
