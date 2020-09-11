@@ -12,13 +12,15 @@ HEADERS += $(wildcard dataTypes/*.h)
 
 DATA_TYPES := $(patsubst %.c,%.o,$(wildcard dataTypes/*.c))
 
+OTHER_OBJ_FILES := parser.o
+
 .PHONY: clean
 
-all: $(DATA_TYPES) $(HEADERS) main.o
-	$(CC) -o main $(DATA_TYPES) main.o $(LDLIBS)
+all: $(DATA_TYPES) $(HEADERS) $(OTHER_OBJ_FILES) main.o
+	$(CC) -o main $(DATA_TYPES) $(OTHER_OBJ_FILES) main.o $(LDLIBS)
 
-test: clean $(DATA_TYPES) $(HEADERS) test.o
-	$(CC) -o test $(DATA_TYPES) test.o $(LDLIBS)
+test: clean $(DATA_TYPES) $(HEADERS) $(OTHER_OBJ_FILES) test.o
+	$(CC) -o test $(DATA_TYPES) $(OTHER_OBJ_FILES) test.o $(LDLIBS)
 
 clean:
 	rm -f main test *.o dataTypes/*.o

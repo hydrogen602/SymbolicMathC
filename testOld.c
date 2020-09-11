@@ -17,7 +17,14 @@ int nextStep(int x) {
     }
 }
 
+int plus1(int x) {
+    return x + 1;
+}
+
 int main() {
+    int x = ( plus1(4), plus1(5), 3 * 8 );
+    printf("x = %d\n", x);
+
 
     nextStep(5);
 }
