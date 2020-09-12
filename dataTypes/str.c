@@ -191,7 +191,7 @@ String str_filterOutChar(String * self, char c) {
         exit(1);
     }
 
-    s.__ptr[index + 1] = '\0';
+    s.__ptr[index] = '\0';
 
     return s;
 }

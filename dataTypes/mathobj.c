@@ -193,7 +193,8 @@ math_obj_array __math_obj_takeOutNull(math_obj_array m) {
     }
 
     if (len2 == 0) {
-        return m;
+        freeArray(m);
+        return NULL;
     }
 
     math_obj_array out = newMathObjectArray(len2);
@@ -280,7 +281,16 @@ math_obj math_obj_eval(math_obj self) {
             }
 
             if (last != NULL) {
-                self->children[indexOfFirst] = last;
+                assert(math_obj_isConstant(last));
+                assert(last->permValueType == MATH_OBJ_LONG);
+                if (last->permValue.i == 0) {
+                    math_obj_free(last);
+                    self->children[indexOfFirst] = NULL;
+                }
+                else {
+                    self->children[indexOfFirst] = last;
+                }
+                
             }
 
             self->children = __math_obj_takeOutNull(self->children);
@@ -289,6 +299,12 @@ math_obj math_obj_eval(math_obj self) {
                 // only one left
                 math_obj tmp = self->children[0];
                 self->children[0] = NULL;
+                math_obj_free(self);
+                return tmp;
+            }
+            else if (len(self->children) == 0) {
+                // nothing left
+                math_obj tmp = buildMathObjectConstantLong(0);
                 math_obj_free(self);
                 return tmp;
             }

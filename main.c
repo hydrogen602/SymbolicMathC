@@ -42,6 +42,7 @@ void repl() {
 
         if (strcmp(str_getString(&in), ":q") == 0) {
             puts("");
+            str_free(&in);
             return;
         }
 
