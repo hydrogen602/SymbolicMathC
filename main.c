@@ -2,31 +2,26 @@
 #include "dataTypes/array.h"
 #include "dataTypes/str.h"
 #include "dataTypes/mathobj.h"
+#include "dataTypes/header.h"
 
 #include "parser.h"
 
 #include <assert.h>
+#include <string.h>
 
 
 int test();
 
-
-
-int main() {
-    printf("Size of String: %lu\n", sizeof(String));
-    printf("Size of Union: %lu\n", sizeof(union __MATH_OBJ_VALUE));
-    printf("Size of Struct: %lu\n", sizeof(math_struct));
-
-    test();
-
-    String s = buildString("y = 4 + 3 + 2 + x + - 5 + x");
+void evalTest(char * c) {
+    String s = buildString(c);
 
     math_obj m = parseString(&s);
 
     str_free(&s);
 
     math_obj_debug_printer(m);
-    putchar('\n');
+    //putchar('\n');
+    printf("-> ");
 
     m = math_obj_eval(m);
 
@@ -34,7 +29,52 @@ int main() {
     putchar('\n');
 
     math_obj_free(m);
+}
 
+void repl() {
+
+    puts("Math Processor System");
+    puts("");
+
+    while (true) {
+        printf("\r> ");
+        String in = buildStringFromStdin(80);
+
+        if (strcmp(str_getString(&in), ":q") == 0) {
+            puts("");
+            return;
+        }
+
+        math_obj m = parseString(&in);
+
+        str_free(&in);
+
+        m = math_obj_eval(m);
+
+        math_obj_printer(m);
+        putchar('\n');
+
+        math_obj_free(m);
+    }
+}
+
+int main() {
+    #if DEBUG
+    printf("Size of String: %lu\n", sizeof(String));
+    printf("Size of Union: %lu\n", sizeof(union __MATH_OBJ_VALUE));
+    printf("Size of Struct: %lu\n", sizeof(math_struct));
+
+    test();
+    #endif
+
+    
+    // evalTest("y = 4 + 3 + 2 + x - 5 - x");
+
+    // evalTest("y = -5");
+
+    // evalTest("y - x + 6 - 10");
+
+    repl();
 
 }
 

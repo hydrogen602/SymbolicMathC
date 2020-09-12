@@ -2,13 +2,47 @@
 #include "dataTypes/array.h"
 #include "dataTypes/str.h"
 #include "dataTypes/mathobj.h"
+#include "dataTypes/util.h"
+#include "dataTypes/header.h"
 
 #include "parser.h"
 
+#include <string.h>
 #include <assert.h>
 
 math_obj parseHelper(String s) {
-    StringArray arr = str_split(&s, '+');
+    char * c = str_getString(&s);
+    int nextLen = str_getLen(&s);
+    for (int i = 1; i < strlen(c); ++i) {
+        if (c[i] == '-' && !util_isBinaryMathOperator(c[i-1])) {
+            // replace with + -
+            nextLen++;
+        }
+    }
+    char * c2 = calloc(nextLen+1, sizeof(char));
+    assert(c2 != NULL);
+    int index_c2 = 0;
+    for (int i = 0; i < strlen(c); ++i) {
+        if (i > 0 && c[i] == '-' && !util_isBinaryMathOperator(c[i-1])) {
+            // replace with + -
+            c2[index_c2] = '+';
+            c2[index_c2+1] = '-';
+            index_c2++;
+        }
+        else {
+            c2[index_c2] = c[i];
+        }
+        index_c2++;
+    }
+    c2[nextLen] = '\0';
+    assert(index_c2 == nextLen);
+
+    String sEdited = buildString(c2);
+    free(c2);
+
+
+
+    StringArray arr = str_split(&sEdited, '+');
 
     math_obj result = NULL;
 
@@ -19,22 +53,39 @@ math_obj parseHelper(String s) {
         exit(1);
         break;
     case 1:
-        // expression
+        // single thing
 
-        
-        if ( str_isInteger(arr + 0) ) {
+        if ( str_index(arr+0, '-') == 0 ) {
+            // leads with - so negate
+
+            #if DEBUG
+            printf("Negate\n");
+            #endif
+
+            String withoutNeg = str_slice(arr + 0, 1);
+
+            result = buildMathObjectNegate( parseHelper(withoutNeg) );
+
+            str_free(&withoutNeg);
+        }
+        else if ( str_isInteger(arr + 0) ) {
+            #if DEBUG
             printf("Constant\n");
+            #endif
             result = buildMathObjectConstant(arr + 0);
         } 
         else {
+            #if DEBUG
             printf("Var\n");
+            #endif
             result = buildMathObjectVariable(arr + 0);
         }
         break;
     
-    default:
-        // eq
+    default: ;
+        #if DEBUG
         printf("Sum\n");
+        #endif
         math_obj_array mathArr = newMathObjectArray(len(arr));
         for (int i = 0; i < len(arr); ++i) {
             mathArr[i] = parseHelper(arr[i]);
@@ -45,7 +96,7 @@ math_obj parseHelper(String s) {
     }
 
     freeStringArray(&arr);
-
+    str_free(&sEdited);
     return result;
 }
 
@@ -68,16 +119,20 @@ math_obj parseString(String *s) {
         fprintf(stderr, "Illegal State at line %d in %s\n", __LINE__, __FILE__);
         exit(1);
         break;
-    case 1:
+    case 1: ;
         // expression
 
+        #if DEBUG
         printf("Expression\n");
+        #endif
         result = parseHelper(arr[0]);
         break;
     
-    case 2:
+    case 2: ;
         // eq
+        #if DEBUG
         printf("Equation\n");
+        #endif
         math_obj a = parseHelper(arr[0]);
         math_obj b = parseHelper(arr[1]);
 

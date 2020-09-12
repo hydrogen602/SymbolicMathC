@@ -174,5 +174,19 @@ void testStr() {
         str_free(&s);
     }
 
+    {
+        puts("Testing str_slice");
+
+        String s = buildString("abcdef");
+        
+        String s2 = str_slice(&s, 2);
+
+        str_free(&s);
+        
+        assert2(str_compare(s2, "cdef"));
+
+        str_free(&s2);
+    }
+
 
 }

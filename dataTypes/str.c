@@ -24,7 +24,7 @@ String buildString(char * st) {
     String s = { NULL };
 
     size_t memLength = strlen(st) + 1;
-    s.__ptr = calloc(memLength, 1);
+    s.__ptr = calloc(memLength, sizeof(char));
     if (s.__ptr == NULL) {
         fprintf(stderr, "Could not allocate memory");
         exit(1);
@@ -39,12 +39,36 @@ String buildStringFromInteger(long int x) {
     // 2^64 is 18446744073709551616 which is 20 chars
     // 2 extra for just in case
     size_t memLength = 22 + 1;
-    s.__ptr = calloc(memLength, 1);
+    s.__ptr = calloc(memLength, sizeof(char));
     if (s.__ptr == NULL) {
         fprintf(stderr, "Could not allocate memory");
         exit(1);
     }
     sprintf(s.__ptr, "%ld", x);
+    return s;
+}
+
+String buildStringFromStdin(int maxLen) {
+    String s = { NULL };
+
+    //char * tmp = calloc(maxLen + 1, sizeof(char));
+    char buf[maxLen+1];
+    fgets(buf, maxLen + 1, stdin);
+
+    for (int i = 0; i < maxLen + 1; ++i) {
+        if (buf[i] == '\n') {
+            buf[i] = '\0';
+            break;
+        }
+    }
+    
+    size_t length = strlen(buf);
+    s.__ptr = calloc(length + 1, sizeof(char));
+    if (s.__ptr == NULL) {
+        fprintf(stderr, "Could not allocate memory");
+        exit(1);
+    }
+    strcpy(s.__ptr, buf);
     return s;
 }
 
@@ -101,6 +125,19 @@ String str_move(String * self) {
     self->__ptr = NULL;
     //self->__memLength = 0;
 
+    return s;
+}
+
+String str_slice(String * self, int startIndex) {
+    String s = {
+        calloc(str_getLen(self) + 1 - startIndex, 1),
+        //self->__memLength
+    };
+    if (s.__ptr == NULL) {
+        fprintf(stderr, "Could not allocate memory");
+        exit(1);
+    }
+    strcpy(s.__ptr, self->__ptr + startIndex);
     return s;
 }
 
@@ -252,6 +289,18 @@ bool str_contains(String * self, char c) {
         }
     }
     return false;
+}
+
+int str_index(String * self, char c) {
+    char * s = str_getString(self);
+    size_t len = str_getLen(self);
+
+    for (size_t i = 0; i < len; ++i) {
+        if (s[i] == c) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void str_print(String * self) {

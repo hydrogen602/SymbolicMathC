@@ -18,6 +18,7 @@ typedef unsigned char value_type_t;
 #define CONSTANT 2
 #define VARIABLE 3
 #define PLUS 4
+#define NEGATE 5
 
 union __MATH_OBJ_VALUE {
    long int i;
@@ -44,6 +45,8 @@ math_obj buildMathObjectConstant(String * label);
 math_obj buildMathObjectEquation(math_obj a, math_obj b);
 
 math_obj buildMathObjectPlus(math_obj_array arr);
+
+math_obj buildMathObjectNegate(math_obj m);
 
 void math_obj_free(math_obj self);
 

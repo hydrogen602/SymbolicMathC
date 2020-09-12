@@ -82,6 +82,12 @@ math_obj buildMathObjectPlus(math_obj_array arr) {
     return __buildMathObjectCustom(buildString("+"), arr, PLUS);
 }
 
+math_obj buildMathObjectNegate(math_obj m) {
+    math_obj_array arr = newMathObjectArray(1);
+    arr[0] = m;
+    return __buildMathObjectCustom(buildString("-"), arr, NEGATE);
+}
+
 math_obj buildMathObjectEquation(math_obj a, math_obj b) {
     math_obj_array mArr = newMathObjectArray(2);
     mArr[0] = a;
@@ -101,7 +107,7 @@ void math_obj_printer(math_obj self) {
         else if (len(self->children) == 1)
         {
             str_print(& self->label);
-            putchar(' ');
+            //putchar(' ');
 
             math_obj_printer(self->children[0]);
         }
@@ -130,7 +136,7 @@ void math_obj_debug_printer(math_obj self) {
         {
             printf("( ");
             str_print(& self->label);
-            putchar(' ');
+            //putchar(' ');
 
             math_obj_debug_printer(self->children[0]);
             printf(") ");
@@ -151,11 +157,26 @@ void math_obj_debug_printer(math_obj self) {
 
 math_obj __math_obj_eval_plus(math_obj self, math_obj other) {
     assert(self->typeTag == CONSTANT && other->typeTag == CONSTANT);
-    assert(self->permValueType == MATH_OBJ_LONG && self->permValueType == MATH_OBJ_LONG);
+    assert(self->permValueType == MATH_OBJ_LONG && other->permValueType == MATH_OBJ_LONG);
 
     long int val = self->permValue.i + other->permValue.i;
 
+    #if DEBUG
     printf("%ld\n", val);
+    #endif
+
+    return buildMathObjectConstantLong(val);
+}
+
+math_obj __math_obj_eval_negate(math_obj self) {
+    assert(self->typeTag == CONSTANT);
+    assert(self->permValueType == MATH_OBJ_LONG);
+
+    long int val = -1 * self->permValue.i;
+
+    #if DEBUG
+    printf("%ld\n", val);
+    #endif
 
     return buildMathObjectConstantLong(val);
 }
@@ -201,6 +222,27 @@ math_obj math_obj_eval(math_obj self) {
     }
     elif (childCount == 1) {
         self->children[0] = math_obj_eval(self->children[0]);
+
+        switch (self->typeTag)
+        {
+        case NEGATE:
+            assert(childCount == 1);
+
+            if (math_obj_isConstant(self->children[0])) {
+                math_obj newSelf = __math_obj_eval_negate(self->children[0]);
+
+                math_obj_free(self);
+                return newSelf;
+            }
+
+            return self;
+            break;
+        
+        default:
+            assert(false);
+            break;
+        }
+
         return self; // don't have any of these yet
     }
     else {
