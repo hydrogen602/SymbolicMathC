@@ -172,6 +172,7 @@ void testStr() {
         assert2(str_compare(arr[0], "abc"));
 
         str_free(&s);
+        freeStringArray(&arr);
     }
 
     {
@@ -188,5 +189,24 @@ void testStr() {
         str_free(&s2);
     }
 
+    {
+        puts("Testing buildStringOfSize");
+
+        String s = buildStringOfSize(10);
+
+        assert2(str_compare(s, ""));
+        assert2(str_getLen(&s) == 0);
+
+        char * c = str_getString(&s);
+
+        for (int i = 0; i < 10; ++i) {
+            c[i] = 'a' + i;
+        }
+
+        assert2(str_compare(s, "abcdefghij"));
+        assert2(str_getLen(&s) == 10);
+        
+        str_free(&s);
+    }
 
 }

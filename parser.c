@@ -19,8 +19,8 @@ math_obj parseHelper(String s) {
             nextLen++;
         }
     }
-    char * c2 = calloc(nextLen+1, sizeof(char));
-    assert(c2 != NULL);
+    String sEdited = buildStringOfSize(nextLen);
+    char * c2 = str_getString(&sEdited);
     int index_c2 = 0;
     for (int i = 0; i < strlen(c); ++i) {
         if (i > 0 && c[i] == '-' && !util_isBinaryMathOperator(c[i-1])) {
@@ -34,13 +34,7 @@ math_obj parseHelper(String s) {
         }
         index_c2++;
     }
-    c2[nextLen] = '\0';
     assert(index_c2 == nextLen);
-
-    String sEdited = buildString(c2);
-    free(c2);
-
-
 
     StringArray arr = str_split(&sEdited, '+');
 

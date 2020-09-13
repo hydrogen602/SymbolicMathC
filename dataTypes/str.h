@@ -38,6 +38,8 @@ String buildStringNull();
 
 String buildString(char * st);
 
+String buildStringOfSize(size_t n);
+
 String buildStringFromInteger(long int x);
 
 String buildStringFromStdin(int maxLen);

@@ -33,6 +33,18 @@ String buildString(char * st) {
     return s;
 }
 
+String buildStringOfSize(size_t n) {
+    String s = { NULL };
+
+    s.__ptr = calloc(n + 1, sizeof(char));
+    if (s.__ptr == NULL) {
+        fprintf(stderr, "Could not allocate memory");
+        exit(1);
+    }
+    // calloc should set everything to null
+    return s;
+}
+
 String buildStringFromInteger(long int x) {
     String s = { NULL };
 
