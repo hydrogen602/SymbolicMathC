@@ -34,7 +34,7 @@ void evalTest(char * c) {
 void repl() {
 
     puts("Math Processor System");
-    puts("");
+    puts("Enter :q to quit");
 
     while (true) {
         printf("\r> ");

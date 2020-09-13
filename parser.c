@@ -38,6 +38,13 @@ math_obj parseHelper(String s) {
 
     StringArray arr = str_split(&sEdited, '+');
 
+    int state = PLUS;
+
+    if (len(arr) == 1) {
+        arr = str_split(&sEdited, '*');
+        state = PRODUCT;
+    }
+
     math_obj result = NULL;
 
     switch (len(arr))
@@ -85,7 +92,13 @@ math_obj parseHelper(String s) {
             mathArr[i] = parseHelper(arr[i]);
         }
 
-        result = buildMathObjectPlus(mathArr);
+        if (state == PLUS)
+            result = buildMathObjectPlus(mathArr);
+        else if (state == PRODUCT)
+            result = buildMathObjectProduct(mathArr);
+        else
+            assert(false);
+        
         break;
     }
 

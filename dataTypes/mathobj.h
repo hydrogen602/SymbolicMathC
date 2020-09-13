@@ -19,6 +19,7 @@ typedef unsigned char value_type_t;
 #define VARIABLE 3
 #define PLUS 4
 #define NEGATE 5
+#define PRODUCT 6
 
 union __MATH_OBJ_VALUE {
    long int i;
@@ -47,6 +48,8 @@ math_obj buildMathObjectEquation(math_obj a, math_obj b);
 math_obj buildMathObjectPlus(math_obj_array arr);
 
 math_obj buildMathObjectNegate(math_obj m);
+
+math_obj buildMathObjectProduct(math_obj_array arr);
 
 void math_obj_free(math_obj self);
 

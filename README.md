@@ -10,3 +10,9 @@ How to run:
 - Clone project
 - run `make` in the folder
 - run `./main`
+
+# Notes on coding standards
+
+Avoid any call to malloc, calloc, or free.  
+For allocating strings, structs, or arrays, use the functions found in dataTypes.  
+This keeps memory management cleaner and deals with nullptrs.
