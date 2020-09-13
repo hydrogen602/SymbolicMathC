@@ -41,6 +41,7 @@ math_obj parseHelper(String s) {
     int state = PLUS;
 
     if (len(arr) == 1) {
+        freeStringArray(&arr);
         arr = str_split(&sEdited, '*');
         state = PRODUCT;
     }

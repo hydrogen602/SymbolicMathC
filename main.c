@@ -3,6 +3,7 @@
 #include "dataTypes/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/header.h"
+#include "dataTypes/mathobj/evaluate.h"
 
 #include "parser.h"
 
