@@ -363,6 +363,36 @@ long int str_toInteger(String * self) {
     return n;
 }
 
+double str_toDouble(String * self) {
+    //double strtod(const char *str, char **endptr)
+    char * ptr;
+    double n = strtod(str_getString(self), &ptr);
+
+    if (n == 0) {
+        if (errno == EINVAL) {
+            fprintf(stderr, "Conversion error occurred: %d\n", errno);
+            exit(1);
+        }
+
+        if (errno == ERANGE) {
+            fprintf(stderr, "The value provided was out of range: %s\n", str_getString(self));
+            exit(1);
+        }
+
+        if (strlen(ptr) > 0) {
+            fprintf(stderr, "Integer Parse Error in string \"%s\": offending bit = \"%s\"\n", str_getString(self), ptr);
+            exit(1);
+        }
+
+        if (str_getLen(self) == 0) {
+            fprintf(stderr, "Cannot convert an empty string to integer\n");
+            exit(1);
+        }
+    }
+
+    return n;
+}
+
 // String str_replace(String * self, char * replaceThis, char * replaceWith) {
 //     int delta = strlen(replaceWith) - strlen(replaceThis);
 //     // thats increase per match

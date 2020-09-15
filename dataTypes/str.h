@@ -70,6 +70,8 @@ bool str_isInteger(String * self);
 
 long int str_toInteger(String * self);
 
+double str_toDouble(String * self);
+
 /**
  * Uses the array.h stuff!
  * Also each value must be freed individually!

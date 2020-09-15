@@ -209,4 +209,42 @@ void testStr() {
         str_free(&s);
     }
 
+
+    {
+        puts("Testing str_toDouble");
+
+        String s;
+        s = buildString("3.14");
+
+        double d = str_toDouble(&s);
+
+        str_free(&s);
+
+        assert2(d == 3.14);
+
+        s = buildString("3.14e-2");
+
+        assert2(str_toDouble(&s) == 3.14e-2);
+
+        str_free(&s);
+
+        s = buildString("3e+5");
+
+        assert2(str_toDouble(&s) == 3e+5);
+
+        str_free(&s);
+
+        s = buildString("3");
+
+        assert2(str_toDouble(&s) == 3);
+
+        str_free(&s);
+
+        s = buildString("-3E5");
+
+        assert2(str_toDouble(&s) == -300000);
+
+        str_free(&s);
+    }
+
 }
