@@ -1,14 +1,11 @@
 #include <stdio.h>
+#include <string.h>
 #include "dataTypes/array.h"
 #include "dataTypes/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/header.h"
 #include "dataTypes/mathobj/evaluate.h"
-
 #include "parser.h"
-
-#include <assert.h>
-#include <string.h>
 
 
 int test();

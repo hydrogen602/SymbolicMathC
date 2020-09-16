@@ -45,7 +45,9 @@ math_obj __buildMathObjectCustom(String s, math_obj_array arr, int typeTag) {
     m->permValue.i = 0;
     m->permValueType = MATH_OBJ_NULL;
 
+    #if DEBUG
     printf("debug: %s\n", str_getString(& m->label));
+    #endif
     
     return m;
 }
@@ -131,6 +133,13 @@ math_obj buildMathObjectNegate(math_obj m) {
 
 math_obj buildMathObjectProduct(math_obj_array arr) {
     return __buildMathObjectCustom(buildString("*"), arr, PRODUCT);
+}
+
+math_obj buildMathObjectFraction(math_obj n, math_obj d) {
+    math_obj_array arr = newMathObjectArray(2);
+    arr[0] = n;
+    arr[1] = d;
+    return __buildMathObjectCustom(buildString("/"), arr, FRACTION);
 }
 
 math_obj buildMathObjectEquation(math_obj a, math_obj b) {

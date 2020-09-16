@@ -1,6 +1,7 @@
 #include "evaluate.h"
 #include "mathobj.h"
 #include "multivalue.h"
+#include "../../errors.h"
 
 /**
  * Frees the incoming array if creating a new one
@@ -89,6 +90,45 @@ math_obj __math_obj_eval_product(math_obj self, math_obj other) {
 
         return buildMathObjectConstantLong(val);
     }
+}
+
+math_obj __math_obj_eval_division(math_obj self, math_obj other) {
+    math_obj_mvalue_assert(self);
+    math_obj_mvalue_assert(other);
+
+    if (self->permValueType == MATH_OBJ_DOUBLE || other->permValueType == MATH_OBJ_DOUBLE) {
+        // double calc
+
+        double val = math_obj_mvalue_getAsDouble(self) / math_obj_mvalue_getAsDouble(other);
+
+        return buildMathObjectConstantDouble(val);
+    }
+    else {
+        // int calc
+
+        long int num = math_obj_mvalue_getAsLong(self);
+        long int denom = math_obj_mvalue_getAsLong(other);
+
+        if (num % denom == 0) {
+            // clean divide
+            return buildMathObjectConstantLong(num / denom);
+        }
+        return buildMathObjectConstantDouble( (double)num / (double)denom );
+    }
+}
+
+math_obj math_obj_eval_negate(math_obj self) {
+    assert(self->typeTag == NEGATE);
+    assert(len(self->children) == 1);
+
+    if (math_obj_isConstant(self->children[0])) {
+        math_obj newSelf = __math_obj_eval_negate(self->children[0]);
+
+        math_obj_free(self);
+        return newSelf;
+    }
+
+    return self;
 }
 
 math_obj math_obj_eval(math_obj self) {
@@ -258,6 +298,11 @@ math_obj math_obj_eval(math_obj self) {
                 return self;
                 break;
             }
+        
+        case FRACTION: {
+                throw_error("Not Implemented", "FRACTION");
+            }
+
         
         default:
             assert(false);

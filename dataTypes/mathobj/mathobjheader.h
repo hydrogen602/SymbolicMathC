@@ -21,6 +21,7 @@ typedef unsigned char value_type_t;
 #define PLUS 4
 #define NEGATE 5
 #define PRODUCT 6
+#define FRACTION 7
 
 union __MATH_OBJ_VALUE {
    long int i;

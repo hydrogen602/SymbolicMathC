@@ -3,6 +3,11 @@
 #include "dataTypes/str.h"
 #include "dataTypes/mathobj.h"
 #include <string.h>
+
+#ifdef assert
+#undef assert
+#endif
+
 #include <assert.h>
 
 #define assert2(expr) assert(expr); printf("\tPassed: %s\n", #expr)

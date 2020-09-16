@@ -1,16 +1,12 @@
 #include <stdio.h>
+#include <string.h>
 #include "dataTypes/array.h"
 #include "dataTypes/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/util.h"
 #include "dataTypes/header.h"
-
 #include "parser.h"
-
 #include "errors.h"
-
-#include <string.h>
-#include <assert.h>
 
 math_obj parseHelper(String s) {
     char * c = str_getString(&s);
