@@ -1,5 +1,6 @@
 #include "evaluate.h"
 #include "mathobj.h"
+#include "multivalue.h"
 
 /**
  * Frees the incoming array if creating a new one
@@ -32,42 +33,62 @@ math_obj_array __math_obj_takeOutNull(math_obj_array m) {
 }
 
 math_obj __math_obj_eval_plus(math_obj self, math_obj other) {
-    assert(self->typeTag == CONSTANT && other->typeTag == CONSTANT);
-    assert(self->permValueType == MATH_OBJ_LONG && other->permValueType == MATH_OBJ_LONG);
+    math_obj_mvalue_assert(self);
+    math_obj_mvalue_assert(other);
 
-    long int val = self->permValue.i + other->permValue.i;
+    if (self->permValueType == MATH_OBJ_DOUBLE || other->permValueType == MATH_OBJ_DOUBLE) {
+        // double calc
 
-    #if DEBUG
-    printf("%ld\n", val);
-    #endif
+        double val = math_obj_mvalue_getAsDouble(self) + math_obj_mvalue_getAsDouble(other);
 
-    return buildMathObjectConstantLong(val);
+        return buildMathObjectConstantDouble(val);
+    }
+    else {
+        // int calc
+
+        long int val = math_obj_mvalue_getAsLong(self) + math_obj_mvalue_getAsLong(other);
+
+        return buildMathObjectConstantLong(val);
+    }
 }
 
 math_obj __math_obj_eval_negate(math_obj self) {
-    assert(self->typeTag == CONSTANT);
-    assert(self->permValueType == MATH_OBJ_LONG);
+    math_obj_mvalue_assert(self);
 
-    long int val = -1 * self->permValue.i;
+    if (self->permValueType == MATH_OBJ_DOUBLE) {
+        // double calc
 
-    #if DEBUG
-    printf("%ld\n", val);
-    #endif
+        double val = - math_obj_mvalue_getAsDouble(self);
 
-    return buildMathObjectConstantLong(val);
+        return buildMathObjectConstantDouble(val);
+    }
+    else {
+        // int calc
+
+        long int val = - math_obj_mvalue_getAsLong(self);
+
+        return buildMathObjectConstantLong(val);
+    }
 }
 
 math_obj __math_obj_eval_product(math_obj self, math_obj other) {
-    assert(self->typeTag == CONSTANT && other->typeTag == CONSTANT);
-    assert(self->permValueType == MATH_OBJ_LONG && other->permValueType == MATH_OBJ_LONG);
+    math_obj_mvalue_assert(self);
+    math_obj_mvalue_assert(other);
 
-    long int val = self->permValue.i * other->permValue.i;
+    if (self->permValueType == MATH_OBJ_DOUBLE || other->permValueType == MATH_OBJ_DOUBLE) {
+        // double calc
 
-    #if DEBUG
-    printf("%ld\n", val);
-    #endif
+        double val = math_obj_mvalue_getAsDouble(self) * math_obj_mvalue_getAsDouble(other);
 
-    return buildMathObjectConstantLong(val);
+        return buildMathObjectConstantDouble(val);
+    }
+    else {
+        // int calc
+
+        long int val = math_obj_mvalue_getAsLong(self) * math_obj_mvalue_getAsLong(other);
+
+        return buildMathObjectConstantLong(val);
+    }
 }
 
 math_obj math_obj_eval(math_obj self) {
@@ -141,8 +162,8 @@ math_obj math_obj_eval(math_obj self) {
 
                 if (last != NULL) {
                     assert(math_obj_isConstant(last));
-                    assert(last->permValueType == MATH_OBJ_LONG);
-                    if (last->permValue.i == 0) {
+                    long int val = math_obj_mvalue_getAsLong(last);
+                    if (val == 0) {
                         math_obj_free(last);
                         self->children[indexOfFirst] = NULL;
                     }
@@ -180,8 +201,10 @@ math_obj math_obj_eval(math_obj self) {
 
                 for (int i = 0; i < childCount; ++i) {
                     if (math_obj_isConstant(self->children[i])) {
-                        assert(self->children[i]->permValueType == MATH_OBJ_LONG);
-                        if (self->children[i]->permValue.i == 0) {
+
+                        long int val = math_obj_mvalue_getAsLong(self->children[i]);
+                        
+                        if (val == 0) {
                             // everything is zero
                             math_obj_free(self);
                             return buildMathObjectConstantLong(0);
@@ -205,8 +228,8 @@ math_obj math_obj_eval(math_obj self) {
 
                 if (last != NULL) {
                     assert(math_obj_isConstant(last));
-                    assert(last->permValueType == MATH_OBJ_LONG);
-                    if (last->permValue.i == 1) {
+                    long int val = math_obj_mvalue_getAsLong(last);
+                    if (val == 1) {
                         math_obj_free(last);
                         self->children[indexOfFirst] = NULL;
                     }

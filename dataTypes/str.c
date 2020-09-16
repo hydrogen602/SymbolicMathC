@@ -351,6 +351,10 @@ bool str_isDouble(String * self) {
     return true;
 }
 
+bool str_isNumber(String * self) {
+    return str_isInteger(self) || str_isDouble(self);
+}
+
 long int str_toInteger(String * self) {
     char * ptr;
     long int n = strtol(str_getString(self), &ptr, 10);

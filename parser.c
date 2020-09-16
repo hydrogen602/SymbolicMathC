@@ -70,12 +70,12 @@ math_obj parseHelper(String s) {
 
             str_free(&withoutNeg);
         }
-        else if ( str_isInteger(arr + 0) ) {
+        else if ( str_isNumber(arr + 0) ) {
             #if DEBUG
             printf("Constant\n");
             #endif
             result = buildMathObjectConstant(arr + 0);
-        } 
+        }
         else {
             #if DEBUG
             printf("Var\n");

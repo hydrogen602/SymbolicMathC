@@ -72,6 +72,8 @@ bool str_isInteger(String * self);
 
 bool str_isDouble(String * self);
 
+bool str_isNumber(String * self);
+
 long int str_toInteger(String * self);
 
 double str_toDouble(String * self);

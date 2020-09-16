@@ -269,6 +269,12 @@ void testStr() {
 
         str_free(&s);
 
+        s = buildString("1e-3");
+
+        assert2(str_isDouble(&s));
+
+        str_free(&s);
+
         s = buildString("..3");
 
         assert2(!str_isDouble(&s));

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <ctype.h>
 
 
 math_obj buildMathObjectNull() {
@@ -43,21 +44,50 @@ math_obj __buildMathObjectCustom(String s, math_obj_array arr, int typeTag) {
     m->typeTag = typeTag;
     m->permValue.i = 0;
     m->permValueType = MATH_OBJ_NULL;
+
+    printf("debug: %s\n", str_getString(& m->label));
     
     return m;
 }
 
 math_obj buildMathObjectVariable(String * label) {
+    char * c = str_getString(label);
+    size_t len = str_getLen(label);
+
+    assert(len > 0);
+    assert(isalpha(c[0]));
+
+    for (int i = 0; i < len; ++i) {
+        if (!isalnum(c[i]) && c[i] != '_') {
+            assert(false);
+        }
+    }
+
+
     return __buildMathObjectCustom(str_move(label), NULL, VARIABLE);
 }
 
 math_obj buildMathObjectConstant(String * label) {
     math_obj m = __buildMathObjectCustom(str_move(label), NULL, CONSTANT);
 
-    long int n = str_toInteger(& m->label);
+    assert(str_getLen(& m->label) > 0);
 
-    m->permValueType = MATH_OBJ_LONG;
-    m->permValue.i = n;
+    if (str_isInteger(& m->label)) {
+        long int n = str_toInteger(& m->label);
+
+        m->permValueType = MATH_OBJ_LONG;
+        m->permValue.i = n;
+    }
+    else {
+        if (str_contains(& m->label, 'e') || str_contains(& m->label, 'E')) {
+            assert(false);
+        }
+        double d = str_toDouble(& m->label);
+
+        m->permValueType = MATH_OBJ_DOUBLE;
+        m->permValue.f = d;
+    }
+    
 
     return m;
 }

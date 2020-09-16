@@ -14,6 +14,8 @@ math_obj buildMathObjectEquation(math_obj a, math_obj b);
 
 math_obj buildMathObjectConstantLong(long int n);
 
+math_obj buildMathObjectConstantDouble(double n);
+
 math_obj buildMathObjectPlus(math_obj_array arr);
 
 math_obj buildMathObjectNegate(math_obj m);
