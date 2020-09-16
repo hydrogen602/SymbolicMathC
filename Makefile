@@ -15,7 +15,7 @@ DATA_TYPES := $(patsubst %.c,%.o,$(wildcard dataTypes/*.c))
 DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/*.c))
 
 
-OTHER_OBJ_FILES := parser.o
+OTHER_OBJ_FILES := parser.o errors.o
 
 .PHONY: clean
 

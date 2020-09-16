@@ -7,6 +7,8 @@
 
 #include "parser.h"
 
+#include "errors.h"
+
 #include <string.h>
 #include <assert.h>
 
@@ -109,6 +111,8 @@ math_obj parseHelper(String s) {
 }
 
 math_obj parseString(String *s) {
+    set_line_num(1);
+
     StringArray arr;
 
     {

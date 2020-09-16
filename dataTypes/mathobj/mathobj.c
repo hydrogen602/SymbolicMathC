@@ -3,7 +3,7 @@
 #include <errno.h>
 #include <string.h>
 #include <ctype.h>
-
+#include "../../errors.h"
 
 math_obj buildMathObjectNull() {
     math_obj m = malloc(sizeof(math_struct));
@@ -55,11 +55,14 @@ math_obj buildMathObjectVariable(String * label) {
     size_t len = str_getLen(label);
 
     assert(len > 0);
-    assert(isalpha(c[0]));
+
+    if (!isalpha(c[0])) {
+        throw_error("Invalid Variable Name", c);
+    }
 
     for (int i = 0; i < len; ++i) {
         if (!isalnum(c[i]) && c[i] != '_') {
-            assert(false);
+            throw_error("Invalid Variable Name", c);
         }
     }
 
@@ -80,7 +83,7 @@ math_obj buildMathObjectConstant(String * label) {
     }
     else {
         if (str_contains(& m->label, 'e') || str_contains(& m->label, 'E')) {
-            assert(false);
+            throw_error("Invalid number", str_getString(& m->label));
         }
         double d = str_toDouble(& m->label);
 
