@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -pedantic -O -std=c99
+CFLAGS = -Wall -pedantic -O -std=c11
 LDLIBS = -lm
 # add $(LDLIBS) for math
 

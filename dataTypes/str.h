@@ -42,6 +42,8 @@ String buildStringOfSize(size_t n);
 
 String buildStringFromInteger(long int x);
 
+String buildStringFromDouble(double d);
+
 String buildStringFromStdin(int maxLen);
 
 void str_free(String * self);
@@ -67,6 +69,8 @@ int str_index(String * self, char c);
 void str_print(String * self);
 
 bool str_isInteger(String * self);
+
+bool str_isDouble(String * self);
 
 long int str_toInteger(String * self);
 

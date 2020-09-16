@@ -25,6 +25,8 @@ int main() {
     int x = ( plus1(4), plus1(5), 3 * 8 );
     printf("x = %d\n", x);
 
+    printf("%f\n", 1.234);
+
 
     nextStep(5);
 }

@@ -46,17 +46,21 @@ String buildStringOfSize(size_t n) {
 }
 
 String buildStringFromInteger(long int x) {
-    String s = { NULL };
-
     // 2^64 is 18446744073709551616 which is 20 chars
     // 2 extra for just in case
     size_t memLength = 22 + 1;
-    s.__ptr = calloc(memLength, sizeof(char));
-    if (s.__ptr == NULL) {
-        fprintf(stderr, "Could not allocate memory");
-        exit(1);
-    }
-    sprintf(s.__ptr, "%ld", x);
+    String s = buildStringOfSize(memLength-1); // func adds 1
+
+    snprintf(s.__ptr, 22+1, "%ld", x);
+    return s;
+}
+
+String buildStringFromDouble(double d) {
+    // 24 sounds like a good length
+    size_t memLength = 24;
+
+    String s = buildStringOfSize(memLength-1); // func adds 1
+    snprintf(s.__ptr, memLength, "%f", d);
     return s;
 }
 
@@ -330,6 +334,19 @@ bool str_isInteger(String * self) {
         if (!isdigit(s[i])) {
             return false;
         }
+    }
+    return true;
+}
+
+bool str_isDouble(String * self) {
+    // double accepts integers as well, so check for integer first
+    char * s = str_getString(self);
+
+    char * endptr;
+    errno = 0;
+    strtod(s, &endptr);
+    if (errno != 0 || *endptr != '\0') {
+        return false;
     }
     return true;
 }

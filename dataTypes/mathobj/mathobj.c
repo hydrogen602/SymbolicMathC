@@ -72,6 +72,16 @@ math_obj buildMathObjectConstantLong(long int n) {
     return m;
 }
 
+math_obj buildMathObjectConstantDouble(double n) {
+    String label = buildStringFromDouble(n);
+    math_obj m = __buildMathObjectCustom(str_move(&label), NULL, CONSTANT);
+
+    m->permValueType = MATH_OBJ_DOUBLE;
+    m->permValue.f = n;
+
+    return m;
+}
+
 bool math_obj_isConstant(math_obj self) {
     return self->typeTag == CONSTANT;
 }

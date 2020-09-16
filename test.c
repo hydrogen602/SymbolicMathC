@@ -247,4 +247,51 @@ void testStr() {
         str_free(&s);
     }
 
+    {
+        puts("Testing str_isDouble");
+
+        String s;
+        s = buildString("3.14");
+
+        assert2(str_isDouble(&s));
+
+        str_free(&s);
+
+        s = buildString("-3.14e-2");
+
+        assert2(str_isDouble(&s));
+
+        str_free(&s);
+
+        s = buildString(".3e+5");
+
+        assert2(str_isDouble(&s));
+
+        str_free(&s);
+
+        s = buildString("..3");
+
+        assert2(!str_isDouble(&s));
+
+        str_free(&s);
+
+        s = buildString("aaa");
+
+        assert2(!str_isDouble(&s));
+
+        str_free(&s);
+
+        s = buildString("3d");
+
+        assert2(!str_isDouble(&s));
+
+        str_free(&s);
+
+        s = buildString("3.14e5a");
+
+        assert2(!str_isDouble(&s));
+
+        str_free(&s);
+    }
+
 }
