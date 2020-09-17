@@ -44,6 +44,12 @@ math_obj parseHelper(String s) {
         state = PRODUCT;
     }
 
+    if (len(arr) == 1) {
+        freeStringArray(&arr);
+        arr = str_rsplit2(&sEdited, '/');
+        state = FRACTION;
+    }
+
     math_obj result = NULL;
 
     switch (len(arr))
@@ -81,7 +87,19 @@ math_obj parseHelper(String s) {
             result = buildMathObjectVariable(arr + 0);
         }
         break;
-    
+    case 2:
+        // two things
+        #if DEBUG
+        printf("Fraction\n");
+        #endif
+
+        if (state == FRACTION) {
+            math_obj n = parseHelper(arr[1]);
+            math_obj d = parseHelper(arr[0]);
+
+            result = buildMathObjectFraction(n, d);
+            break;
+        }
     default: ;
         #if DEBUG
         printf("Sum\n");

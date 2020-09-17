@@ -22,6 +22,8 @@ math_obj buildMathObjectNegate(math_obj m);
 
 math_obj buildMathObjectProduct(math_obj_array arr);
 
+math_obj buildMathObjectFraction(math_obj n, math_obj d);
+
 void math_obj_free(math_obj self);
 
 void math_obj_printer(math_obj self);

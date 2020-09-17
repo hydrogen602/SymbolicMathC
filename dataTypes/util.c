@@ -10,3 +10,10 @@ bool util_isBinaryMathOperator(char c) {
     }
     return false;
 }
+
+long util_gcd(long a, long b) {
+    if (b == 0) {
+        return a;
+    }
+    return util_gcd(b, a % b);
+}

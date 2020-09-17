@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "../../errors.h"
+#include "multivalue.h"
 
 math_obj buildMathObjectNull() {
     math_obj m = malloc(sizeof(math_struct));
@@ -139,6 +140,11 @@ math_obj buildMathObjectFraction(math_obj n, math_obj d) {
     math_obj_array arr = newMathObjectArray(2);
     arr[0] = n;
     arr[1] = d;
+
+    if (math_obj_isConstant(d) && math_obj_mvalue_getAsLong(d) == 0) {
+        throw_error("Division By Zero", str_getString(&d->label));
+    }
+    // check if d is zero
     return __buildMathObjectCustom(buildString("/"), arr, FRACTION);
 }
 

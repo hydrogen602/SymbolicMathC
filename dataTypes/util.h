@@ -5,4 +5,6 @@
 
 bool util_isBinaryMathOperator(char c);
 
+long util_gcd(long a, long b);
+
 #endif
