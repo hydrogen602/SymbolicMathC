@@ -141,7 +141,7 @@ math_obj buildMathObjectFraction(math_obj n, math_obj d) {
     arr[0] = n;
     arr[1] = d;
 
-    if (math_obj_isConstant(d) && math_obj_mvalue_getAsLong(d) == 0) {
+    if (math_obj_isConstant(d) && math_obj_mvalue_isEqualToLong(d, 0)) {
         throw_error("Division By Zero", str_getString(&d->label));
     }
     // check if d is zero
@@ -214,21 +214,3 @@ void math_obj_debug_printer(math_obj self) {
         }
     }
 }
-
-// math_obj math_obj_move(math_obj * self) {
-//     // deletes the old to avoid dangling pointers
-//     math_obj m = {
-//         str_move(&(self->label)),
-//         self->childA,
-//         self->childB,
-//         self->childCount,
-//         self->typeTag
-//     };
-
-//     self->childA = NULL;
-//     self->childB = NULL;
-//     self->childCount = 0;
-//     self->typeTag = NOTHING;
-
-//     return m;
-// }

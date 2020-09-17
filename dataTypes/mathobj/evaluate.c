@@ -97,7 +97,7 @@ math_obj __math_obj_eval_division(math_obj self, math_obj other) {
     math_obj_mvalue_assert(self);
     math_obj_mvalue_assert(other);
 
-    if (math_obj_mvalue_getAsLong(other) == 0) {
+    if (math_obj_mvalue_isEqualToLong(other, 0)) {
         throw_error("Division by zero", str_getString(&other->label));
     }
 
@@ -126,11 +126,11 @@ math_obj __math_obj_eval_fraction(math_obj self, math_obj other) {
     math_obj_mvalue_assert(self);
     math_obj_mvalue_assert(other);
 
-    if (math_obj_mvalue_getAsLong(other) == 0) {
+    if (math_obj_mvalue_isEqualToLong(other, 0)) {
         throw_error("Division By Zero", str_getString(&other->label));
     }
 
-    if (math_obj_mvalue_getAsLong(self) == 0) {
+    if (math_obj_mvalue_isEqualToLong(self, 0)) {
         return buildMathObjectConstantLong(0);
     }
 
@@ -202,8 +202,8 @@ math_obj math_obj_simplify_plus(math_obj self) {
 
     if (last != NULL) {
         assert(math_obj_isConstant(last));
-        long int val = math_obj_mvalue_getAsLong(last);
-        if (val == 0) {
+        
+        if (math_obj_mvalue_isEqualToLong(last, 0)) {
             math_obj_free(last);
             self->children[indexOfFirst] = NULL;
         }
@@ -243,10 +243,8 @@ math_obj math_obj_simplify_product(math_obj self) {
 
     for (int i = 0; i < childCount; ++i) {
         if (math_obj_isConstant(self->children[i])) {
-
-            long int val = math_obj_mvalue_getAsLong(self->children[i]);
             
-            if (val == 0) {
+            if (math_obj_mvalue_isEqualToLong(self->children[i], 0)) {
                 // everything is zero
                 math_obj_free(self);
                 return buildMathObjectConstantLong(0);
@@ -270,8 +268,7 @@ math_obj math_obj_simplify_product(math_obj self) {
 
     if (last != NULL) {
         assert(math_obj_isConstant(last));
-        long int val = math_obj_mvalue_getAsLong(last);
-        if (val == 1) {
+        if (math_obj_mvalue_isEqualToLong(last, 1)) {
             math_obj_free(last);
             self->children[indexOfFirst] = NULL;
         }
@@ -308,11 +305,11 @@ math_obj math_obj_simplify_fraction(math_obj self) {
     math_obj num = self->children[0];
     math_obj denom = self->children[1];
 
-    if (math_obj_isConstant(num) && math_obj_mvalue_getAsLong(num) == 0) {
+    if (math_obj_isConstant(num) && math_obj_mvalue_isEqualToLong(num, 0)) {
         math_obj_free(self);
         return buildMathObjectConstantLong(0);
     }
-    else if (math_obj_isConstant(denom) && math_obj_mvalue_getAsLong(denom) == 1) {
+    else if (math_obj_isConstant(denom) && math_obj_mvalue_isEqualToLong(denom, 1)) {
         self->children[0] = NULL;
         math_obj_free(self);
         return num;

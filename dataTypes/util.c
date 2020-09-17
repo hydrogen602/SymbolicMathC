@@ -1,4 +1,5 @@
 #include "util.h"
+#include <math.h>
 
 bool util_isBinaryMathOperator(char c) {
     char * ops = "^*=+/><-";
@@ -16,4 +17,8 @@ long util_gcd(long a, long b) {
         return a;
     }
     return util_gcd(b, a % b);
+}
+
+double util_percentDiff(double a, double b) {
+    return fabs( (a - b) / (a + b) ) * 100;
 }

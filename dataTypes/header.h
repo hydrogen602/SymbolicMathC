@@ -11,3 +11,5 @@
 #define elif else if
 
 #define DEBUG 0
+
+#define PERCENT_DIFF_TO_BE_SAME (1e-6)

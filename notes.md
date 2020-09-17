@@ -11,3 +11,13 @@ Difference:
 ## Product & Division
 - a * b * c * d => ((a * b) * c) * d
 - a * b / c * d => ((a * b) / c) * d
+
+## How to print fractions?
+
+a * b - 4  
+\---------  
+x - 1
+
+## Assigning vars
+
+define x = 1 ?

@@ -8,4 +8,8 @@ double math_obj_mvalue_getAsDouble(math_obj self);
 
 void math_obj_mvalue_assert(math_obj self);
 
+bool math_obj_mvalue_isEqualToDouble(math_obj self, double d);
+
+bool math_obj_mvalue_isEqualToLong(math_obj self, long n);
+
 #endif
