@@ -51,7 +51,7 @@ math_obj variables_get(String * name) {
         throw_error("Variable Name Missing", "");
     }
 
-    for (int i = 0; i < len(definitionsArray); ++i) {
+    for (int i = 0; i < currIndex; ++i) {
         if (str_isEqual(&definitionsArray[i].name, name)) {
             return math_obj_copy(definitionsArray[i].value);
         }
