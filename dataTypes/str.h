@@ -40,6 +40,8 @@ String buildString(char * st);
 
 String buildStringOfSize(size_t n);
 
+String buildStringOfRawSize(size_t n);
+
 String buildStringFromInteger(long int x);
 
 String buildStringFromDouble(double d);

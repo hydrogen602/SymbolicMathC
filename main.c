@@ -51,12 +51,14 @@ void repl() {
 
         str_free(&in);
 
-        m = math_obj_eval(m);
+        if (m != NULL) {
+            m = math_obj_eval(m);
 
-        math_obj_printer(m);
-        putchar('\n');
+            math_obj_printer(m);
+            putchar('\n');
 
-        math_obj_free(m);
+            math_obj_free(m);
+        }
     }
 }
 

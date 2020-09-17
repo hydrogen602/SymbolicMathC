@@ -21,22 +21,20 @@ String buildStringNull() {
 }
 
 String buildString(char * st) {
-    String s = { NULL };
-
     size_t memLength = strlen(st) + 1;
-    s.__ptr = calloc(memLength, sizeof(char));
-    if (s.__ptr == NULL) {
-        fprintf(stderr, "Could not allocate memory");
-        exit(1);
-    }
+    String s = buildStringOfRawSize(memLength);
     strcpy(s.__ptr, st);
     return s;
 }
 
 String buildStringOfSize(size_t n) {
+    return buildStringOfRawSize(n + 1);
+}
+
+String buildStringOfRawSize(size_t n) {
     String s = { NULL };
 
-    s.__ptr = calloc(n + 1, sizeof(char));
+    s.__ptr = calloc(n, sizeof(char));
     if (s.__ptr == NULL) {
         fprintf(stderr, "Could not allocate memory");
         exit(1);
@@ -65,9 +63,7 @@ String buildStringFromDouble(double d) {
 }
 
 String buildStringFromStdin(int maxLen) {
-    String s = { NULL };
 
-    //char * tmp = calloc(maxLen + 1, sizeof(char));
     char buf[maxLen+1];
     fgets(buf, maxLen + 1, stdin);
 
@@ -77,13 +73,9 @@ String buildStringFromStdin(int maxLen) {
             break;
         }
     }
-    
     size_t length = strlen(buf);
-    s.__ptr = calloc(length + 1, sizeof(char));
-    if (s.__ptr == NULL) {
-        fprintf(stderr, "Could not allocate memory");
-        exit(1);
-    }
+
+    String s = buildStringOfSize(length);
     strcpy(s.__ptr, buf);
     return s;
 }
@@ -119,14 +111,7 @@ void freeStringArray(StringArray * arrPtr) {
 
 
 String str_copy(String * self) {
-    String s = {
-        calloc(str_getLen(self) + 1, 1),
-        //self->__memLength
-    };
-    if (s.__ptr == NULL) {
-        fprintf(stderr, "Could not allocate memory");
-        exit(1);
-    }
+    String s = buildStringOfSize(str_getLen(self));
     strcpy(s.__ptr, self->__ptr);
     return s;
 }
@@ -148,14 +133,7 @@ String str_slice(String * self, int startIndex) {
     if (startIndex >= str_getLen(self)) {
         return buildStringNull();
     }
-    String s = {
-        calloc(str_getLen(self) + 1 - startIndex, 1),
-        //self->__memLength
-    };
-    if (s.__ptr == NULL) {
-        fprintf(stderr, "Could not allocate memory");
-        exit(1);
-    }
+    String s = buildStringOfSize(str_getLen(self) - startIndex);
     strcpy(s.__ptr, self->__ptr + startIndex);
     return s;
 }
@@ -189,13 +167,7 @@ String str_filterOutChar(String * self, char c) {
         }
     }
 
-    String s = {
-        calloc(newLen, 1)
-    };
-    if (s.__ptr == NULL) {
-        fprintf(stderr, "Could not allocate memory");
-        exit(1);
-    }
+    String s = buildStringOfRawSize(newLen);
 
     int index = 0;
     for (int i = 0; i < stringLen; ++i) {
@@ -216,14 +188,8 @@ String str_filterOutChar(String * self, char c) {
 }
 
 String str_concat(String * self, String * other) {
-    size_t newLen = str_getLen(self) + str_getLen(other) + 1;
-    String s = {
-        calloc(newLen, 1)
-    };
-    if (s.__ptr == NULL) {
-        fprintf(stderr, "Could not allocate memory");
-        exit(1);
-    }
+    size_t newLen = str_getLen(self) + str_getLen(other);
+    String s = buildStringOfSize(newLen);
 
     strcpy(s.__ptr, self->__ptr);
     strcat(s.__ptr, other->__ptr);
@@ -421,7 +387,7 @@ bool str_isEqual(String * self, String * other) {
     char * s = str_getString(self);
     char * o = str_getString(other);
 
-    return strcmp(s, o);
+    return strcmp(s, o) == 0;
 }
 
 bool str_startswith(String * self, String * other) {

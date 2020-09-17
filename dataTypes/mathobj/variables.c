@@ -1,6 +1,8 @@
 #include "variables.h"
 #include "../../errors.h"
 #include "mathobj.h"
+#include "mathobjheader.h"
+#include <stdio.h>
 
 typedef struct Name_And_Value_Pair
 {
@@ -21,7 +23,7 @@ void variables_add(String * name, math_obj m) {
         throw_error("Variable Name Missing", "");
     }
 
-    for (int i = 0; i < len(definitionsArray); ++i) {
+    for (int i = 0; i < currIndex; ++i) {
         if (str_isEqual(&definitionsArray[i].name, name)) {
             throw_error("Variable Already Exist", str_getString(name));
         }
@@ -38,8 +40,6 @@ void variables_add(String * name, math_obj m) {
 
     definitionsArray[currIndex] = pair;
     currIndex += 1;
-
-    math_obj_free(m);
 }
 
 math_obj variables_get(String * name) {
@@ -61,12 +61,16 @@ math_obj variables_get(String * name) {
 }
 
 void variables_cleanup() {
+    #if DEBUG
+    printf("Cleaning up variable list\n");
+    #endif
     if (definitionsArray == NULL) {
         return;
     }
     
-    for (int i = 0; i < len(definitionsArray); ++i) {
+    for (int i = 0; i < currIndex; ++i) {
         math_obj_free(definitionsArray->value);
         str_free(&definitionsArray->name);
     }
+    freeArray(definitionsArray);
 }

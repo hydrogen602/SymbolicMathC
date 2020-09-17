@@ -348,6 +348,7 @@ math_obj math_obj_eval(math_obj self) {
         if (self->typeTag == VARIABLE) {
             math_obj m = variables_get(&self->label);
             if (m != NULL) {
+                math_obj_free(self);
                 return m;
             }
         }
