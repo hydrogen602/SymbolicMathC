@@ -145,6 +145,9 @@ String str_move(String * self) {
 }
 
 String str_slice(String * self, int startIndex) {
+    if (startIndex >= str_getLen(self)) {
+        return buildStringNull();
+    }
     String s = {
         calloc(str_getLen(self) + 1 - startIndex, 1),
         //self->__memLength
@@ -412,6 +415,49 @@ double str_toDouble(String * self) {
     }
 
     return n;
+}
+
+bool str_isEqual(String * self, String * other) {
+    char * s = str_getString(self);
+    char * o = str_getString(other);
+
+    return strcmp(s, o);
+}
+
+bool str_startswith(String * self, String * other) {
+    char * s = str_getString(self);
+    char * o = str_getString(other);
+
+    if (str_getLen(self) < str_getLen(other)) {
+        return false;
+    }
+
+    for (int i = 0; i < str_getLen(other); ++i) {
+        if (s[i] != o[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool str_startswithCString(String * self, char * other) {
+    if (other == NULL) {
+        return false;
+    }
+    char * s = str_getString(self);
+
+    if (str_getLen(self) < strlen(other)) {
+        return false;
+    }
+
+    for (int i = 0; i < strlen(other); ++i) {
+        if (s[i] != other[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // String str_replace(String * self, char * replaceThis, char * replaceWith) {

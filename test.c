@@ -305,4 +305,39 @@ void testStr() {
         str_free(&s);
     }
 
+    {
+        puts("Testing str_startswith");
+        {
+            String s1 = buildString("abc");
+            String s2 = buildString("abcd");
+            String s3 = buildString("de");
+
+            assert2(!str_startswith(&s1, &s2));
+            assert2(str_startswith(&s2, &s1));
+            assert2(!str_startswith(&s2, &s3));
+            assert2(!str_startswith(&s1, &s3));
+            
+            str_free(&s1);
+            str_free(&s2);
+            str_free(&s3);
+        }
+    }
+    
+    {
+        puts("Testing str_startswithCString");
+        {
+            String s1 = buildString("abc");
+            String s2 = buildString("abcd");
+            String s3 = buildString("de");
+
+            assert2(!str_startswithCString(&s1, "abcd"));
+            assert2(str_startswithCString(&s2, "a"));
+            assert2(!str_startswithCString(&s2, "e"));
+            assert2(str_startswithCString(&s3, "de"));
+            
+            str_free(&s1);
+            str_free(&s2);
+            str_free(&s3);
+        }
+    }
 }

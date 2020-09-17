@@ -4,8 +4,8 @@
 #include "dataTypes/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/header.h"
-#include "dataTypes/mathobj/evaluate.h"
 #include "parser.h"
+#include "dataTypes/mathobj/variables.h"
 
 
 int test();
@@ -13,7 +13,7 @@ int test();
 void evalTest(char * c) {
     String s = buildString(c);
 
-    math_obj m = parseString(&s);
+    math_obj m = parseString(&s, 1);
 
     str_free(&s);
 
@@ -34,7 +34,10 @@ void repl() {
     puts("Math Processor System");
     puts("Enter :q to quit");
 
+    int lineCounter = 0;
+
     while (true) {
+        lineCounter++;
         printf("\r> ");
         String in = buildStringFromStdin(80);
 
@@ -44,7 +47,7 @@ void repl() {
             return;
         }
 
-        math_obj m = parseString(&in);
+        math_obj m = parseString(&in, lineCounter);
 
         str_free(&in);
 
@@ -75,6 +78,7 @@ int main() {
 
     repl();
 
+    variables_cleanup();
 }
 
 int test() {

@@ -1,6 +1,7 @@
 #include "evaluate.h"
 #include "mathobj.h"
 #include "multivalue.h"
+#include "variables.h"
 #include "../../errors.h"
 #include "../util.h"
 
@@ -333,7 +334,9 @@ math_obj math_obj_simplify_fraction(math_obj self) {
 
 math_obj math_obj_eval(math_obj self) {
     // if not returning self, free self!!!
-    assert(self != NULL);
+    if (self == NULL) {
+        return NULL;
+    }
 
     int childCount = len(self->children);
 
@@ -342,6 +345,12 @@ math_obj math_obj_eval(math_obj self) {
     }
 
     if (childCount == 0) {
+        if (self->typeTag == VARIABLE) {
+            math_obj m = variables_get(&self->label);
+            if (m != NULL) {
+                return m;
+            }
+        }
         return self; // cant simplify one thing
     }
     elif (childCount == 1) {

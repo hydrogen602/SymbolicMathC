@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "dataTypes/mathobj/variables.h"
 
 int lineNum = 0;
 
@@ -11,6 +12,7 @@ void throw_error(char * err, char * cause) {
         fprintf(stderr, "ERROR: %s: %s\n", err, cause);
     }
 
+    variables_cleanup();
     exit(EXIT_FAILURE);
 }
 

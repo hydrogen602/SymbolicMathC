@@ -90,4 +90,10 @@ StringArray str_split(String * self, char c);
  */
 StringArray str_rsplit2(String * self, char c);
 
+bool str_isEqual(String * self, String * other);
+
+bool str_startswith(String * self, String * other);
+
+bool str_startswithCString(String * self, char * other);
+
 #endif

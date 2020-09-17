@@ -53,8 +53,27 @@ math_obj __buildMathObjectCustom(String s, math_obj_array arr, int typeTag) {
     return m;
 }
 
+math_obj math_obj_copy(math_obj self) {
+    if (self == NULL) return NULL;
+
+    math_obj_array newArr = newMathObjectArray(len(self->children));
+    for (int i = 0; i < len(self->children); ++i) {
+        newArr[i] = math_obj_copy(self->children[i]);
+    }
+
+    math_obj newObj = __buildMathObjectCustom(str_copy(&self->label), newArr, self->typeTag);
+
+    newObj->permValue = self->permValue;
+    newObj->permValueType = self->permValueType;
+
+    return newObj;
+}
+
 math_obj buildMathObjectVariable(String * label) {
     char * c = str_getString(label);
+    if (strcmp(c, "define") == 0) {
+        throw_error("Invalid Variable Name", str_getString(label));
+    }
     size_t len = str_getLen(label);
 
     assert(len > 0);
@@ -152,7 +171,7 @@ math_obj buildMathObjectEquation(math_obj a, math_obj b) {
     math_obj_array mArr = newMathObjectArray(2);
     mArr[0] = a;
     mArr[1] = b;
-    return __buildMathObjectCustom(buildString("="), mArr, PLUS);
+    return __buildMathObjectCustom(buildString("="), mArr, EQUATION);
 }
 
 void math_obj_printer(math_obj self) {
@@ -213,4 +232,56 @@ void math_obj_debug_printer(math_obj self) {
             printf(") ");
         }
     }
+}
+
+#define eprintf(...) for(int i = 0; i < depth; ++i) { fprintf(stderr, "  "); } fprintf(stderr, __VA_ARGS__)
+#define eprintf_if(var, case) if ((var) == (case)) { fprintf(stderr, #case); }
+
+void __math_obj_debug_dump_helper(math_obj m, int depth) {
+    eprintf("Math Object\n");
+    eprintf("label: %s\n", str_getString(&m->label));
+    eprintf("typeTag: ");
+    int tag = m->typeTag;
+    eprintf_if(tag, NOTHING)
+    else eprintf_if(tag, EQUATION)
+    else eprintf_if(tag, CONSTANT)
+    else eprintf_if(tag, VARIABLE)
+    else eprintf_if(tag, PLUS)
+    else eprintf_if(tag, NEGATE)
+    else eprintf_if(tag, PRODUCT)
+    else eprintf_if(tag, FRACTION)
+    else { eprintf("Unknown Type Tag"); }
+    eprintf("\n");
+
+    int valueType = m->permValueType;
+    if (valueType == MATH_OBJ_NULL) {
+        eprintf("permValueType: MATH_OBJ_NULL\n");
+        eprintf("permValue: NULL\n");
+    }
+    elif (valueType == MATH_OBJ_LONG) {
+        eprintf("permValueType: MATH_OBJ_LONG\n");
+        eprintf("permValue: %ld\n", m->permValue.i);
+    }
+    elif (valueType == MATH_OBJ_DOUBLE) {
+        eprintf("permValueType: MATH_OBJ_DOUBLE\n");
+        eprintf("permValue: %f\n", m->permValue.f);
+    }
+
+    int childCount = len(m->children);
+    eprintf("len(children): %d\n", childCount);
+
+    if (childCount > 0) { eprintf("[\n"); }
+    for (int i = 0; i < childCount; ++i) {
+        __math_obj_debug_dump_helper(m->children[i], depth + 1);
+
+        if (i + 1 != childCount) {
+            // not last one
+            eprintf(",\n");
+        }
+    }
+    if (childCount > 0) { eprintf("]\n"); }
+}
+
+void math_obj_debug_dump(math_obj m) {
+    __math_obj_debug_dump_helper(m, 0);
 }

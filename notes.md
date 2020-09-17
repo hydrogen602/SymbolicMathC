@@ -1,3 +1,9 @@
+# Code policies
+
+Crashing
+- throw_error if the user is at fault
+- assert if the code is at fault
+
 
 # What to do with minus?
 
@@ -21,3 +27,4 @@ x - 1
 ## Assigning vars
 
 define x = 1 ?
+

@@ -26,10 +26,14 @@ math_obj buildMathObjectFraction(math_obj n, math_obj d);
 
 void math_obj_free(math_obj self);
 
+math_obj math_obj_copy(math_obj self);
+
 void math_obj_printer(math_obj self);
 
 void math_obj_debug_printer(math_obj self);
 
 bool math_obj_isConstant(math_obj self);
+
+void math_obj_debug_dump(math_obj m);
 
 #endif

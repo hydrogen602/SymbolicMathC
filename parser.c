@@ -9,6 +9,10 @@
 #include "errors.h"
 
 math_obj parseHelper(String s) {
+    if (str_getLen(&s) == 0) {
+        throw_error("Unexpected Empty String", str_getString(&s));
+    }
+
     char * c = str_getString(&s);
     int nextLen = str_getLen(&s);
     for (int i = 1; i < strlen(c); ++i) {
@@ -124,8 +128,42 @@ math_obj parseHelper(String s) {
     return result;
 }
 
-math_obj parseString(String *s) {
-    set_line_num(1);
+math_obj parseString(String *s, int lineNum) {
+    set_line_num(lineNum);
+
+    if (str_getLen(s) == 0) {
+        return NULL;
+    }
+
+    if (str_startswithCString(s, "define ")) {
+        String sBrief = str_slice(s, 7);
+
+        math_obj m = parseString(&sBrief, lineNum);
+
+        if (m == NULL) {
+            throw_error("Invalid Assignment", str_getString(&sBrief));
+        }
+        if (m->typeTag != EQUATION) {
+            math_obj_debug_dump(m);
+            throw_error("Invalid Assignment: Expected Equation", str_getString(&sBrief));
+        }
+        assert(len(m->children) == 2);
+        math_obj var = m->children[0];
+        math_obj value = m->children[1];
+
+        if (var->typeTag != VARIABLE) {
+            throw_error("Left Side of Assignment Must Be A Variable", str_getString(&sBrief));
+        }
+
+        variables_add(&var->label, value);
+
+        m->children[1] = NULL; // right side is the only thing we keep
+        math_obj_free(m);
+
+        str_free(&sBrief);
+
+        return NULL;
+    }
 
     StringArray arr;
 

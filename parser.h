@@ -3,6 +3,6 @@
 
 #include "dataTypes/mathobj.h"
 
-math_obj parseString(String *s);
+math_obj parseString(String *s, int lineNum);
 
 #endif
