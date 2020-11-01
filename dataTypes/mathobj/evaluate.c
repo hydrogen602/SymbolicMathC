@@ -1,9 +1,8 @@
 #include "evaluate.h"
 #include "mathobj.h"
-#include "multivalue.h"
-#include "variables.h"
 #include "../../errors.h"
 #include "../util.h"
+#include "types/typedefs.h"
 
 /**
  * Frees the incoming array if creating a new one
