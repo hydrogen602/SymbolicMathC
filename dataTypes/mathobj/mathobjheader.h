@@ -36,8 +36,6 @@ typedef struct Math_Object {
 typedef math_struct * math_obj;
 typedef math_obj * math_obj_array;
 
-inline math_obj_array newMathObjectArray(size_t c) {
-    return newArray(c, sizeof(math_obj));
-}
+#define newMathObjectArray(c) newArray((c), sizeof(math_obj))
 
 #endif

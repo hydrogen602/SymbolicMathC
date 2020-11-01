@@ -31,6 +31,13 @@ inline bool math_obj_isConstant(math_obj self) {
     return __usesPermValue(self->typeTag);
 }
 
+inline math_obj_array math_obj_getChildren(math_obj self) {
+    if (__usesChildren(self->typeTag)) {
+        return self->data.children;
+    }
+    return NULL;
+}
+
 math_obj __buildMathObjectNull() {
     math_obj m = malloc(sizeof(math_struct));
     if (m == NULL) {
@@ -50,7 +57,7 @@ void math_obj_free(math_obj self) {
         str_free(&self->data.label);
     }
     elif (__usesChildren(self->typeTag)) {
-        for (int i = 0; i < len(self->data.children); ++i) {
+        for (unsigned int i = 0; i < len(self->data.children); ++i) {
             math_obj_free(self->data.children[i]);
         }
         freeArray(self->data.children);
@@ -67,7 +74,7 @@ math_obj math_obj_copy(math_obj self) {
 
     if (usesChildren(self)) {
         math_obj_array newArr = newMathObjectArray(len(self->data.children));
-        for (int i = 0; i < len(self->data.children); ++i) {
+        for (unsigned int i = 0; i < len(self->data.children); ++i) {
             newArr[i] = math_obj_copy(self->data.children[i]);
         }
         return __buildMathObjectOperatorLike(newArr, self->typeTag);
@@ -98,7 +105,7 @@ math_obj __buildMathObjectVarLike(String * label, math_type typeTag) {
         throw_error("Variables must begin with a letter", c);
     }
 
-    for (int i = 0; i < len; ++i) {
+    for (unsigned int i = 0; i < len; ++i) {
         if (!isalnum(c[i]) && c[i] != '_') {
             throw_error("Invalid char in variable name", c);
         }
@@ -145,13 +152,62 @@ void math_obj_printer(math_obj self) {
         }
         else {
             math_obj_printer(self->data.children[0]);
-            for (int i = 1; i < len(self->data.children); ++i) {
+            for (unsigned int i = 1; i < len(self->data.children); ++i) {
                 putchar(math_obj_getOpSymbol(self->typeTag));
                 putchar(' ');
 
                 math_obj_printer(self->data.children[i]);
             }
         }
+    }
+    elif (usesLabel(self)) {
+        str_print(&self->data.label);
+        putchar(' ');
+    }
+    elif (usesPermValue(self)) {
+        if (self->typeTag == CONSTANT_LONG) {
+            String s = buildStringFromInteger(math_obj_mvalue_getAsLong(self));
+            str_print(&s);
+            str_free(&s);
+        }
+        elif (self->typeTag == CONSTANT_DOUBLE) {
+            String s = buildStringFromDouble(math_obj_mvalue_getAsDouble(self));
+            str_print(&s);
+            str_free(&s);
+        }
+        else {
+            assert(false);
+        }
+    }
+}
+
+void math_obj_debug_printer(math_obj self) {
+if (self == NULL) {
+        printf("NULL ");
+    }
+    elif (usesChildren(self)) {
+        printf("( ");
+        if (len(self->data.children) == 0) {
+            putchar(math_obj_getOpSymbol(self->typeTag));
+            putchar(' ');
+        }
+        else if (len(self->data.children) == 1)
+        {
+            putchar(math_obj_getOpSymbol(self->typeTag));
+            //putchar(' ');
+
+            math_obj_printer(self->data.children[0]);
+        }
+        else {
+            math_obj_printer(self->data.children[0]);
+            for (unsigned int i = 1; i < len(self->data.children); ++i) {
+                putchar(math_obj_getOpSymbol(self->typeTag));
+                putchar(' ');
+
+                math_obj_printer(self->data.children[i]);
+            }
+        }
+        printf(") ");
     }
     elif (usesLabel(self)) {
         str_print(&self->data.label);
@@ -173,89 +229,59 @@ void math_obj_printer(math_obj self) {
     }
 }
 
-// void math_obj_debug_printer(math_obj self) {
-//     if (self == NULL) {
-//         printf("NULL ");
-//     }
-//     else {
-//         if (len(self->children) == 0) {
-//             str_print(& self->label);
-//             putchar(' ');
-//         }
-//         else if (len(self->children) == 1)
-//         {
-//             printf("( ");
-//             str_print(& self->label);
-//             //putchar(' ');
+#define eprintf(...) for(int i = 0; i < depth; ++i) { fprintf(stderr, "  "); } fprintf(stderr, __VA_ARGS__)
+#define eprintf_if(var, case) if ((var) == (case)) { fprintf(stderr, #case); }
 
-//             math_obj_debug_printer(self->children[0]);
-//             printf(") ");
-//         }
-//         else {
-//             printf("( ");
-//             math_obj_debug_printer(self->children[0]);
-//             for (int i = 1; i < len(self->children); ++i) {
-//                 str_print(& self->label);
-//                 putchar(' ');
+void __math_obj_debug_dump_helper(math_obj m, int depth) {
+    eprintf("Math Object\n");
+    eprintf("typeTag: ");
+    int tag = m->typeTag;
+    eprintf_if(tag, NOTHING)
+    else eprintf_if(tag, EQUATION)
+    else eprintf_if(tag, CONSTANT_DOUBLE)
+    else eprintf_if(tag, CONSTANT_LONG)
+    else eprintf_if(tag, VARIABLE)
+    else eprintf_if(tag, PLUS)
+    else eprintf_if(tag, NEGATE)
+    else eprintf_if(tag, PRODUCT)
+    else eprintf_if(tag, FRACTION)
+    else { eprintf("Unknown Type Tag"); }
 
-//                 math_obj_debug_printer(self->children[i]);
-//             }
-//             printf(") ");
-//         }
-//     }
-// }
+    if (usesLabel(m))
+        eprintf("label: %s\n", str_getString(&m->data.label));
+    eprintf("\n");
 
-// #define eprintf(...) for(int i = 0; i < depth; ++i) { fprintf(stderr, "  "); } fprintf(stderr, __VA_ARGS__)
-// #define eprintf_if(var, case) if ((var) == (case)) { fprintf(stderr, #case); }
+    if (m->typeTag == NOTHING) {
+        eprintf("permValueType: MATH_OBJ_NULL\n");
+        eprintf("permValue: NULL\n");
+    }
+    elif (m->typeTag == CONSTANT_LONG) {
+        eprintf("permValueType: MATH_OBJ_LONG\n");
+        eprintf("permValue: %ld\n", m->data.permValue.i);
+    }
+    elif (m->typeTag == CONSTANT_DOUBLE) {
+        eprintf("permValueType: MATH_OBJ_DOUBLE\n");
+        eprintf("permValue: %f\n", m->data.permValue.f);
+    }
 
-// void __math_obj_debug_dump_helper(math_obj m, int depth) {
-//     eprintf("Math Object\n");
-//     eprintf("label: %s\n", str_getString(&m->label));
-//     eprintf("typeTag: ");
-//     int tag = m->typeTag;
-//     eprintf_if(tag, NOTHING)
-//     else eprintf_if(tag, EQUATION)
-//     else eprintf_if(tag, CONSTANT)
-//     else eprintf_if(tag, VARIABLE)
-//     else eprintf_if(tag, PLUS)
-//     else eprintf_if(tag, NEGATE)
-//     else eprintf_if(tag, PRODUCT)
-//     else eprintf_if(tag, FRACTION)
-//     else { eprintf("Unknown Type Tag"); }
-//     eprintf("\n");
+    int childCount = len(math_obj_getChildren(m));
+    eprintf("len(children): %d\n", childCount);
 
-//     int valueType = m->permValueType;
-//     if (valueType == MATH_OBJ_NULL) {
-//         eprintf("permValueType: MATH_OBJ_NULL\n");
-//         eprintf("permValue: NULL\n");
-//     }
-//     elif (valueType == MATH_OBJ_LONG) {
-//         eprintf("permValueType: MATH_OBJ_LONG\n");
-//         eprintf("permValue: %ld\n", m->permValue.i);
-//     }
-//     elif (valueType == MATH_OBJ_DOUBLE) {
-//         eprintf("permValueType: MATH_OBJ_DOUBLE\n");
-//         eprintf("permValue: %f\n", m->permValue.f);
-//     }
+    if (childCount > 0) { eprintf("[\n"); }
+    for (int i = 0; i < childCount; ++i) {
+        __math_obj_debug_dump_helper(m->data.children[i], depth + 1);
 
-//     int childCount = len(m->children);
-//     eprintf("len(children): %d\n", childCount);
+        if (i + 1 != childCount) {
+            // not last one
+            eprintf(",\n");
+        }
+    }
+    if (childCount > 0) { eprintf("]\n"); }
+}
 
-//     if (childCount > 0) { eprintf("[\n"); }
-//     for (int i = 0; i < childCount; ++i) {
-//         __math_obj_debug_dump_helper(m->children[i], depth + 1);
-
-//         if (i + 1 != childCount) {
-//             // not last one
-//             eprintf(",\n");
-//         }
-//     }
-//     if (childCount > 0) { eprintf("]\n"); }
-// }
-
-// void math_obj_debug_dump(math_obj m) {
-//     __math_obj_debug_dump_helper(m, 0);
-// }
+void math_obj_debug_dump(math_obj m) {
+    __math_obj_debug_dump_helper(m, 0);
+}
 
 char math_obj_getOpSymbol(math_type t) {
     switch (t)

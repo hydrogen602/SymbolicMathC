@@ -204,7 +204,7 @@ void testStr() {
 
         char * c = str_getString(&s);
 
-        for (int i = 0; i < 10; ++i) {
+        for (unsigned int i = 0; i < 10; ++i) {
             c[i] = 'a' + i;
         }
 

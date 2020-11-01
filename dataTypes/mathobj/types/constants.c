@@ -87,3 +87,7 @@ double math_obj_mvalue_getAsDouble(math_obj self) {
         assert(false);
     }
 }
+
+inline void math_obj_mvalue_assert(math_obj self) {
+    assert(usesPermValue(self));
+}

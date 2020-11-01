@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -pedantic -O -std=c11
+CFLAGS = -Wall -Wextra -pedantic -O -std=c11
 LDLIBS = -lm
 # add $(LDLIBS) for math
 
@@ -10,10 +10,11 @@ CFLAGS += $(VALGRIND)
 HEADERS := $(wildcard *.h)
 HEADERS += $(wildcard dataTypes/*.h)
 HEADERS += $(wildcard dataTypes/mathobj/*.h)
+HEADERS += $(wildcard dataTypes/mathobj/types/*.h)
 
 DATA_TYPES := $(patsubst %.c,%.o,$(wildcard dataTypes/*.c))
 DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/*.c))
-
+DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/types/*.c))
 
 OTHER_OBJ_FILES := parser.o errors.o
 
@@ -26,7 +27,7 @@ test: clean $(DATA_TYPES) $(HEADERS) $(OTHER_OBJ_FILES) test.o
 	$(CC) -o test $(DATA_TYPES) $(OTHER_OBJ_FILES) test.o $(LDLIBS)
 
 clean:
-	rm -f main test *.o dataTypes/*.o dataTypes/mathobj/*.o
+	rm -f main test *.o dataTypes/*.o dataTypes/mathobj/*.o dataTypes/mathobj/types/*.o
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $*.c -o $@

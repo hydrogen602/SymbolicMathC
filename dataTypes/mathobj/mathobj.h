@@ -9,12 +9,20 @@
 
 #define usesChildren(t) __usesChildren((t)->typeTag)
 
+/*
+ * Returns NULL if self does not use children i.e. is constant or var, not operator
+ */
+math_obj_array math_obj_getChildren(math_obj self);
+
 bool __usesLabel(math_type t);
 
 bool __usesPermValue(math_type t);
 
 bool __usesChildren(math_type t);
 
+/*
+ * Returns 0 if there is no symbol
+ */
 char math_obj_getOpSymbol(math_type t);
 
 math_obj __buildMathObjectVarLike(String * label, math_type typeTag);
@@ -43,12 +51,10 @@ math_obj math_obj_copy(math_obj self);
 // math_obj buildMathObjectFraction(math_obj n, math_obj d);
 
 
-// void math_obj_printer(math_obj self);
+void math_obj_printer(math_obj self);
 
-// void math_obj_debug_printer(math_obj self);
+void math_obj_debug_printer(math_obj self);
 
-
-
-// void math_obj_debug_dump(math_obj m);
+void math_obj_debug_dump(math_obj m);
 
 #endif

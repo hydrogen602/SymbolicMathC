@@ -2,9 +2,9 @@
 #include <math.h>
 
 bool util_isBinaryMathOperator(char c) {
-    char * ops = "^*=+/><-";
-    int len = 8;
-    for (int i = 0; i < len; ++i) {
+    char ops[] = "^*=+/><-";
+    unsigned int len = 8;
+    for (unsigned int i = 0; i < len; ++i) {
         if (ops[i] == c) {
             return true;
         }
