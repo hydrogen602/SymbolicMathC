@@ -15,7 +15,7 @@ math_obj buildMathObjectConstantDouble(double n) {
     union __MATH_OBJ_VALUE value;
     value.f = n;
 
-    return __buildMathObjectConstantLike(value, CONSTANT_LONG);
+    return __buildMathObjectConstantLike(value, CONSTANT_DOUBLE);
 }
 
 math_obj buildMathObjectConstantFromString(String * label) {
