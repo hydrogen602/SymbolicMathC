@@ -35,17 +35,17 @@ AVLTreeNode * __build_AVLTreeNode(int key, const char * value) {
     return ptr;
 }
 
-void __free_AVLTreeNode(AVLTreeNode * ptr) {
+void free_AVLTreeNode(AVLTreeNode * ptr) {
     if (ptr == NULL) {
         return;
     }
-    __free_AVLTreeNode(ptr->left);
-    __free_AVLTreeNode(ptr->right);
+    free_AVLTreeNode(ptr->left);
+    free_AVLTreeNode(ptr->right);
     free(ptr);
 }
 
 void avl_tree_free(AVLTree * tree) {
-    __free_AVLTreeNode(tree->root);
+    free_AVLTreeNode(tree->root);
     tree->length = 0;
     tree->root = NULL;
 }
@@ -54,7 +54,7 @@ int avl_tree_add(AVLTree * tree, int key, const char * value) {
     AVLTreeNode * newNode = __build_AVLTreeNode(key, value);
     int result = __avl_tree_add(tree, newNode);
     if (result != EXIT_SUCCESS) {
-        __free_AVLTreeNode(newNode); // free the memory again
+        free_AVLTreeNode(newNode); // free the memory again
     }
     return result;
 }
@@ -91,6 +91,9 @@ int __avl_tree_add_helper(AVLTreeNode * parent, AVLTreeNode * newNode) {
                     return -1;
                 }
             }
+            else if (result == EXIT_FAILURE) {
+                return EXIT_FAILURE;
+            }
         }
     }
     else if (newNode->key > parent->key) {
@@ -112,6 +115,9 @@ int __avl_tree_add_helper(AVLTreeNode * parent, AVLTreeNode * newNode) {
                 if (parent->balanceFactor > 0) {
                     return -1;
                 }
+            }
+            else if (result == EXIT_FAILURE) {
+                return EXIT_FAILURE;
             }
         }
     }
@@ -196,7 +202,7 @@ struct __AVL_TREE_DETALS avl_tree_get_details(AVLTreeNode * node) {
         struct __AVL_TREE_DETALS dataLeft = avl_tree_get_details(node->left);
         struct __AVL_TREE_DETALS dataRight = avl_tree_get_details(node->right);
 
-        int maxHeight = dataLeft.height;
+        unsigned int maxHeight = dataLeft.height;
         if (maxHeight < dataRight.height) {
             maxHeight = dataRight.height;
         }

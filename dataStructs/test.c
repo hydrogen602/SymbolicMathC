@@ -64,10 +64,10 @@ void testBasic() {
 
 void testBigRandomInsert() {
     AVLTree tr = build_AVLTree();
-    int sz = 100000;
+    unsigned int sz = 100000;
     int * keys = calloc(sz, sizeof(int));
     char ** vals = calloc(sz, sizeof(const char *));
-    for (int i = 0; i < sz; ++i) {
+    for (unsigned int i = 0; i < sz; ++i) {
         do {
             if (vals[i] != NULL) {
                 free(vals[i]);
@@ -91,11 +91,33 @@ void testBigRandomInsert() {
     }
 
     avl_tree_free(&tr);
-    for (int i = 0; i < sz; ++i) {
+    for (unsigned int i = 0; i < sz; ++i) {
         free(vals[i]);
     }
     free(keys);
     free(vals);
+}
+
+void testRepeatLength() {
+    AVLTree tr = build_AVLTree();
+    //int keys[] = { 1, 3, -4, 2, 10, 4, 0 };
+    //const char * vals[]  = {"one", "three", "minus four", "two", "ten", "four", "zero"};
+    
+    int keys[] = { 0, 1, 2, 3, 4, -4, 2 };
+    const char * vals[]  = {"zero", "one", "two", "three", "four", "minus four", "two"};
+    
+
+    for (int i = 0; i < 7; ++i) {
+        avl_tree_add(&tr, keys[i], vals[i]);
+    }
+
+    //avl_tree_printer(&tr, true);
+    struct __AVL_TREE_DETALS details = avl_tree_get_details(tr.root);
+
+    assert(details.count == tr.length);
+    assert(details.height <= tr.length);
+
+    avl_tree_free(&tr);
 }
 
 int main() {
@@ -103,8 +125,8 @@ int main() {
 
     runTester(testBasic);
     runTester(testBigRandomInsert);
+    runTester(testRepeatLength);
 
-    puts(" ");
     printf("Passed %d out of %d test groups\n", groupsPassed, allGroups);
 
     return 0;

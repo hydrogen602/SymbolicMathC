@@ -18,8 +18,8 @@ typedef struct AVL_TREE {
 } AVLTree;
 
 struct __AVL_TREE_DETALS {
-    int height;
-    int count;
+    unsigned int height;
+    unsigned int count;
 };
 
 void set_avltree_silent(bool s);
@@ -28,10 +28,13 @@ AVLTree build_AVLTree();
 
 void avl_tree_free(AVLTree * tree);
 
+void free_AVLTreeNode(AVLTreeNode * ptr);
+
 int avl_tree_add(AVLTree * tree, int key, const char * value);
 
 AVLTreeNode * avl_tree_getNode(AVLTree * tree, int key);
 
+AVLTreeNode * avl_tree_removeNode(AVLTree * tree, int key);
 
 /* =============================================
  *                 Debug Stuff 
