@@ -1,7 +1,7 @@
 #ifndef MATH_OBJ_HEADER_H_
 #define MATH_OBJ_HEADER_H_
 
-#include "../str.h"
+#include "../../dataStructs/str.h"
 #include "../../dataStructs/array.h"
 #include "../header.h"
 

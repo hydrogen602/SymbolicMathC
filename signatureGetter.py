@@ -9,9 +9,18 @@ if len(sys.argv) != 2:
 
 cmd, file = sys.argv
 
+def findAndPrint(regex, lines):
+    tmp = [re.sub(r'\s*{\s*', ';', s) for s in lines if re.fullmatch(regex, s)]
+    print('\n'.join(tmp))
+
 with open(file) as f:
+    lines = f.readlines()
+    regex = r'\w+(\s*[*]+)?\s+(__\w+)\s*\([^\)]*\)\s*(\{\s*)?'
 
-    x = [re.sub(r'\s*{\s*', ';', s) for s in f.readlines() if re.match(r'\w', s) and ';' not in s]
+    findAndPrint(regex, lines)
 
+    print()
+    regex = r'\w+(\s*[*]+)?\s+([^_]\w+)\s*\([^\)]*\)\s*(\{\s*)?'
 
-    print('\n'.join(x))
+    findAndPrint(regex, lines)
+

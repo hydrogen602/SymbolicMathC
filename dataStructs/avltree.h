@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include "string.h"
 
 typedef struct AVL_TREE_NODE {
     struct AVL_TREE_NODE * left;
