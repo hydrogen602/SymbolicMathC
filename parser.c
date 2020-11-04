@@ -156,7 +156,8 @@ math_obj parseString(String *s, int lineNum) {
             throw_error("Left Side of Assignment Must Be A Variable", str_getString(&sBrief));
         }
 
-        variables_add(&sBrief, value);
+        String cpy = str_copy(&var->data.label);
+        variables_add(&cpy, value);
 
         m->data.children[1] = NULL; // right side is the only thing we keep
         math_obj_free(m);
