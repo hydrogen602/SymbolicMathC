@@ -9,12 +9,14 @@
 #define heightDiff(parent) ( ( ((parent)->right == NULL) ? 0 : (int)((parent)->right->height) ) - ( ((parent)->left == NULL) ? 0 : (int)((parent)->left->height) ) )
 
 
-int __avl_tree_add(AVLTree * tree, AVLTreeNode * newNode);
+AVLTreeNode * __rotateRight(AVLTreeNode * parent);
+AVLTreeNode * __rotateLeft(AVLTreeNode * parent);
+int __compKeys(int a, int b);
 AVLTreeNode * __build_AVLTreeNode(int key, const char * value);
-void __free_AVLTreeNode(AVLTreeNode * ptr);
+unsigned int __avl_tree_getHeight(AVLTreeNode * node);
+int __avl_tree_add_helper(AVLTreeNode ** parentPtr, AVLTreeNode * newNode);
 int __avl_tree_add(AVLTree * tree, AVLTreeNode * newNode);
 void __avl_tree_printer(AVLTreeNode * node, int depth, bool displayBalance);
-unsigned int __avl_tree_getHeight(AVLTreeNode * node);
 
 
 bool avltree_silent = false;
@@ -71,6 +73,14 @@ AVLTreeNode * __rotateLeft(AVLTreeNode * parent) {
     y->height = __avl_tree_getHeight(y);
 
     return y;
+}
+
+/*
+ * Makes it easier to switch between
+ * key types
+ */
+int __compKeys(int a, int b) {
+    return a - b;
 }
 
 /* ====================== Main Funcs ====================== */
@@ -146,8 +156,7 @@ unsigned int __avl_tree_getHeight(AVLTreeNode * node) {
 int __avl_tree_add_helper(AVLTreeNode ** parentPtr, AVLTreeNode * newNode) {
     AVLTreeNode * parent = *parentPtr;
     // if things go towards zero, balance factor doesn't need to be propagated
-
-    if (newNode->key < parent->key) {
+    if (__compKeys(newNode->key, parent->key) < 0) {
         // ========= LEFT =========
 
         // (parent->balanceFactor)--;
@@ -160,7 +169,7 @@ int __avl_tree_add_helper(AVLTreeNode ** parentPtr, AVLTreeNode * newNode) {
                 return result;
         }
     }
-    else if (newNode->key > parent->key) {
+    else if (__compKeys(newNode->key, parent->key) > 0) {
         // ========= RIGHT =========
 
         // (parent->balanceFactor)++;
@@ -263,7 +272,7 @@ AVLTreeNode * avl_tree_getNode(AVLTree * tree, int key) {
     AVLTreeNode * ptr = tree->root;
 
     while (ptr != NULL && ptr->key != key) {
-        if (key < ptr->key) {
+        if (__compKeys(key, ptr->key) < 0) {
             ptr = ptr->left;
         }
         else {
@@ -271,7 +280,7 @@ AVLTreeNode * avl_tree_getNode(AVLTree * tree, int key) {
         }
     }
 
-    if (ptr->key == key) {
+    if (__compKeys(ptr->key, key) == 0) {
         return ptr;
     }
     return NULL;

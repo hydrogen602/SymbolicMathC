@@ -15,12 +15,12 @@ def findAndPrint(regex, lines):
 
 with open(file) as f:
     lines = f.readlines()
-    regex = r'\w+(\s*[*]+)?\s+(__\w+)\s*\([^\)]*\)\s*(\{\s*)?'
+    regex = r'\w+(\s+\w+)*(\s*[*]+)?\s+(__\w+)\s*\([^\)]*\)\s*(\{\s*)?'
 
     findAndPrint(regex, lines)
 
     print()
-    regex = r'\w+(\s*[*]+)?\s+([^_]\w+)\s*\([^\)]*\)\s*(\{\s*)?'
+    regex = r'\w+(\s+\w+)*(\s*[*]+)?\s+([^_]\w+)\s*\([^\)]*\)\s*(\{\s*)?'
 
     findAndPrint(regex, lines)
 
