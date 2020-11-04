@@ -9,7 +9,7 @@ CFLAGS += $(VALGRIND)
 
 HEADERS := $(wildcard *.h)
 
-OTHER_OBJ_FILES := avltree.o
+OTHER_OBJ_FILES := avltree.o array.o
 
 .PHONY: clean
 

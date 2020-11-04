@@ -2,7 +2,7 @@
 #define MATH_OBJ_HEADER_H_
 
 #include "../str.h"
-#include "../array.h"
+#include "../../dataStructs/array.h"
 #include "../header.h"
 
 typedef enum __MATH_OBJ_TYPE {

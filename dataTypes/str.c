@@ -6,7 +6,7 @@
 #include <errno.h>
 
 #include "str.h"
-#include "array.h"
+#include "../dataStructs/array.h"
 
 /**
  * All internal funcs or variables should start with __str_

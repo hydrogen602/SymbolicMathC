@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "dataTypes/array.h"
+#include "dataStructs/array.h"
 #include "dataTypes/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/util.h"

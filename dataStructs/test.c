@@ -3,9 +3,14 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "avltree.h"
 
+#define crashOnFail true
+
 #define runTester(func) { printf("Running %s...\n", #func); func(); testConclusion(); }
+
+void __assert(bool test, const char * expr);
 
 #define assert(expr) __assert((expr), #expr)
 #define assertNot(expr) __assert(!(expr), "!(" #expr ")")
@@ -16,6 +21,26 @@ int allTests = 0;
 int groupsPassed = 0;
 int allGroups = 0;
 
+bool __heightWithinRestriction(int n, int h) {
+    // https://en.wikipedia.org/wiki/AVL_tree
+
+    double golden_ratio = 1.6180339887498948482;
+    // change of basis
+    //           ln(3)
+    // log3(6) = -----
+    //           ln(6)
+
+    bool x = log2(n + 1) - 1 <= h && h < (log10(n + 2) / log10(golden_ratio)) - 0.3277;
+
+    if (!x) {
+        printf("n = %d, h = %d\n", n, h);
+        printf("log2(n + 1) - 1 = %f\n", log2(n + 1) - 1);
+        printf("(log(n + 2) / log(golden_ratio)) - 1.3277 = %f\n", (log10(n + 2) / log10(golden_ratio)) - 0.3277);
+    }
+
+    return x;
+}
+
 void __assert(bool test, const char * expr) {
     //printf("Testing: %s\n", expr);
 
@@ -25,6 +50,11 @@ void __assert(bool test, const char * expr) {
     }
     else {
         fprintf(stderr, "Failed test: %s\n", expr);
+#if crashOnFail
+        printf("Passed %d out of %d tests\n", passedTests, allTests);
+        exit(EXIT_FAILURE);
+#endif
+
     }
 }
 
@@ -47,7 +77,11 @@ void testBasic() {
     const char * vals[]  = {"one", "three", "minus four", "two", "ten", "four", "zero"};
     
     for (int i = 0; i < 7; ++i) {
+        assert((int)tr.length == i);
         avl_tree_add(&tr, keys[i], vals[i]);
+
+        AVLTreeDetails_t t = avl_tree_get_details(tr.root);
+        assert(t.height - ceil(t.bestHeight) < 2);
     }
 
     assert(tr.length == 7);
@@ -78,6 +112,8 @@ void testBigRandomInsert() {
             vals[i] = s;
         }
         while (avl_tree_add(&tr, keys[i], vals[i]) > 0);
+
+        assert(__heightWithinRestriction(tr.length, tr.height));
     }
 
     assert(tr.length == sz);
@@ -115,7 +151,42 @@ void testRepeatLength() {
     struct __AVL_TREE_DETALS details = avl_tree_get_details(tr.root);
 
     assert(details.count == tr.length);
-    assert(details.height <= tr.length);
+    assert(details.height == tr.height);
+
+    avl_tree_free(&tr);
+
+    assert(0 == tr.length);
+    assert(0 == tr.height);
+    assert(tr.root == NULL);
+}
+
+void testIterator() {
+    AVLTree tr = build_AVLTree();
+    int keys[] = { 1, 3, -4, 2, 10, 4, 0 };
+    const char * vals[]  = {"one", "three", "minus four", "two", "ten", "four", "zero"};
+    
+    for (int i = 0; i < 7; ++i) {
+        assert((int)tr.length == i);
+        avl_tree_add(&tr, keys[i], vals[i]);
+
+        AVLTreeDetails_t t = avl_tree_get_details(tr.root);
+        assert(t.height - ceil(t.bestHeight) < 2);
+    }
+
+    assert(tr.length == 7);
+    assert(tr.root != NULL);
+
+    int inOrder_keys[] = { -4, 0, 1, 2, 3, 4, 10 };
+    const char * inOrder_vals[]  = {"minus four", "zero", "one", "two", "three", "four", "ten"};
+
+    int index = 0;
+    for (AVLTreeIterator iter = avl_tree_iterate(&tr); iter.it != NULL; avl_tree_iter_next(&iter)) {
+
+        assert(inOrder_keys[index] == iter.it->key);
+        assert(strcmp(inOrder_vals[index], iter.it->value) == 0);
+
+        index++;
+    }
 
     avl_tree_free(&tr);
 }
@@ -126,6 +197,7 @@ int main() {
     runTester(testBasic);
     runTester(testBigRandomInsert);
     runTester(testRepeatLength);
+    runTester(testIterator);
 
     printf("Passed %d out of %d test groups\n", groupsPassed, allGroups);
 
