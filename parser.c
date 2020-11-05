@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include "dataTypes/array.h"
-#include "dataTypes/str.h"
+#include "dataStructs/array.h"
+#include "dataStructs/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/util.h"
 #include "dataTypes/header.h"
@@ -15,7 +15,7 @@ math_obj parseHelper(String s) {
 
     char * c = str_getString(&s);
     int nextLen = str_getLen(&s);
-    for (int i = 1; i < strlen(c); ++i) {
+    for (unsigned int i = 1; i < strlen(c); ++i) {
         if (c[i] == '-' && !util_isBinaryMathOperator(c[i-1])) {
             // replace with + -
             nextLen++;
@@ -24,7 +24,7 @@ math_obj parseHelper(String s) {
     String sEdited = buildStringOfSize(nextLen);
     char * c2 = str_getString(&sEdited);
     int index_c2 = 0;
-    for (int i = 0; i < strlen(c); ++i) {
+    for (unsigned int i = 0; i < strlen(c); ++i) {
         if (i > 0 && c[i] == '-' && !util_isBinaryMathOperator(c[i-1])) {
             // replace with + -
             c2[index_c2] = '+';
@@ -40,7 +40,7 @@ math_obj parseHelper(String s) {
 
     StringArray arr = str_split(&sEdited, '+');
 
-    int state = PLUS;
+    math_type state = PLUS;
 
     if (len(arr) == 1) {
         freeStringArray(&arr);
@@ -82,7 +82,7 @@ math_obj parseHelper(String s) {
             #if DEBUG
             printf("Constant\n");
             #endif
-            result = buildMathObjectConstant(arr + 0);
+            result = buildMathObjectConstantFromString(arr + 0);
         }
         else {
             #if DEBUG
@@ -104,12 +104,13 @@ math_obj parseHelper(String s) {
             result = buildMathObjectFraction(n, d);
             break;
         }
+        // fall through
     default: ;
         #if DEBUG
         printf("Sum\n");
         #endif
         math_obj_array mathArr = newMathObjectArray(len(arr));
-        for (int i = 0; i < len(arr); ++i) {
+        for (unsigned int i = 0; i < len(arr); ++i) {
             mathArr[i] = parseHelper(arr[i]);
         }
 
@@ -147,17 +148,18 @@ math_obj parseString(String *s, int lineNum) {
             math_obj_debug_dump(m);
             throw_error("Invalid Assignment: Expected Equation", str_getString(&sBrief));
         }
-        assert(len(m->children) == 2);
-        math_obj var = m->children[0];
-        math_obj value = m->children[1];
+        assert(len(math_obj_getChildren(m)) == 2);
+        math_obj var = m->data.children[0];
+        math_obj value = m->data.children[1];
 
         if (var->typeTag != VARIABLE) {
             throw_error("Left Side of Assignment Must Be A Variable", str_getString(&sBrief));
         }
 
-        variables_add(&var->label, value);
+        String cpy = str_copy(&var->data.label);
+        variables_add(&cpy, value);
 
-        m->children[1] = NULL; // right side is the only thing we keep
+        m->data.children[1] = NULL; // right side is the only thing we keep
         math_obj_free(m);
 
         str_free(&sBrief);

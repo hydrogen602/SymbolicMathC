@@ -6,7 +6,7 @@
 #include <errno.h>
 
 #include "str.h"
-#include "array.h"
+#include "../dataStructs/array.h"
 
 /**
  * All internal funcs or variables should start with __str_
@@ -62,12 +62,12 @@ String buildStringFromDouble(double d) {
     return s;
 }
 
-String buildStringFromStdin(int maxLen) {
+String buildStringFromStdin(unsigned int maxLen) {
 
     char buf[maxLen+1];
     fgets(buf, maxLen + 1, stdin);
 
-    for (int i = 0; i < maxLen + 1; ++i) {
+    for (unsigned int i = 0; i < maxLen + 1; ++i) {
         if (buf[i] == '\n') {
             buf[i] = '\0';
             break;
@@ -102,7 +102,7 @@ StringArray newStringArray(size_t length) {
  */
 void freeStringArray(StringArray * arrPtr) {
     StringArray arr = *arrPtr;
-    for (int i = 0; i < len(arr); ++i) {
+    for (unsigned int i = 0; i < len(arr); ++i) {
         str_free(arr+i);
     }
     freeArray(arr);
@@ -129,7 +129,7 @@ String str_move(String * self) {
     return s;
 }
 
-String str_slice(String * self, int startIndex) {
+String str_slice(String * self, unsigned int startIndex) {
     if (startIndex >= str_getLen(self)) {
         return buildStringNull();
     }
@@ -161,7 +161,7 @@ String str_filterOutChar(String * self, char c) {
     size_t stringLen = str_getLen(self);
     size_t newLen = stringLen + 1;
     char * str = str_getString(self);
-    for (int i = 0; i < stringLen; ++i) {
+    for (unsigned int i = 0; i < stringLen; ++i) {
         if (str[i] == c) {
             newLen--;
         }
@@ -169,8 +169,8 @@ String str_filterOutChar(String * self, char c) {
 
     String s = buildStringOfRawSize(newLen);
 
-    int index = 0;
-    for (int i = 0; i < stringLen; ++i) {
+    unsigned int index = 0;
+    for (unsigned int i = 0; i < stringLen; ++i) {
         if (str[i] != c) {
             s.__ptr[index] = str[i];
             index++;
@@ -390,6 +390,20 @@ bool str_isEqual(String * self, String * other) {
     return strcmp(s, o) == 0;
 }
 
+int str_cmp(String * self, String * other) {
+    char * s = str_getString(self);
+    char * o = str_getString(other);
+
+    return strcmp(s, o);
+}
+
+int str_cmp_special(String self, String other) {
+    char * s = str_getString(&self);
+    char * o = str_getString(&other);
+
+    return strcmp(s, o);
+}
+
 bool str_startswith(String * self, String * other) {
     char * s = str_getString(self);
     char * o = str_getString(other);
@@ -398,7 +412,7 @@ bool str_startswith(String * self, String * other) {
         return false;
     }
 
-    for (int i = 0; i < str_getLen(other); ++i) {
+    for (unsigned int i = 0; i < str_getLen(other); ++i) {
         if (s[i] != o[i]) {
             return false;
         }
@@ -417,7 +431,7 @@ bool str_startswithCString(String * self, char * other) {
         return false;
     }
 
-    for (int i = 0; i < strlen(other); ++i) {
+    for (unsigned int i = 0; i < strlen(other); ++i) {
         if (s[i] != other[i]) {
             return false;
         }

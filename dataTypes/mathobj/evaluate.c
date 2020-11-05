@@ -1,16 +1,16 @@
 #include "evaluate.h"
 #include "mathobj.h"
-#include "multivalue.h"
-#include "variables.h"
 #include "../../errors.h"
 #include "../util.h"
+#include "types/typedefs.h"
+#include "variables.h"
 
 /**
  * Frees the incoming array if creating a new one
  */
 math_obj_array __math_obj_takeOutNull(math_obj_array m) {
     int len2 = len(m);
-    for (int i = 0; i < len(m); ++i) {
+    for (unsigned int i = 0; i < len(m); ++i) {
         if (m[i] == NULL) {
             len2--;
         }
@@ -24,7 +24,7 @@ math_obj_array __math_obj_takeOutNull(math_obj_array m) {
     math_obj_array out = newMathObjectArray(len2);
 
     int index = 0;
-    for (int i = 0; i < len(m); ++i) {
+    for (unsigned int i = 0; i < len(m); ++i) {
         if (m[i] != NULL) {
             out[index] = m[i];
             index++;
@@ -39,7 +39,7 @@ math_obj __math_obj_eval_plus(math_obj self, math_obj other) {
     math_obj_mvalue_assert(self);
     math_obj_mvalue_assert(other);
 
-    if (self->permValueType == MATH_OBJ_DOUBLE || other->permValueType == MATH_OBJ_DOUBLE) {
+    if (self->typeTag == CONSTANT_DOUBLE || other->typeTag == CONSTANT_DOUBLE) {
         // double calc
 
         double val = math_obj_mvalue_getAsDouble(self) + math_obj_mvalue_getAsDouble(other);
@@ -58,7 +58,7 @@ math_obj __math_obj_eval_plus(math_obj self, math_obj other) {
 math_obj __math_obj_eval_negate(math_obj self) {
     math_obj_mvalue_assert(self);
 
-    if (self->permValueType == MATH_OBJ_DOUBLE) {
+    if (self->typeTag == CONSTANT_DOUBLE) {
         // double calc
 
         double val = - math_obj_mvalue_getAsDouble(self);
@@ -78,7 +78,7 @@ math_obj __math_obj_eval_product(math_obj self, math_obj other) {
     math_obj_mvalue_assert(self);
     math_obj_mvalue_assert(other);
 
-    if (self->permValueType == MATH_OBJ_DOUBLE || other->permValueType == MATH_OBJ_DOUBLE) {
+    if (self->typeTag == CONSTANT_DOUBLE || other->typeTag == CONSTANT_DOUBLE) {
         // double calc
 
         double val = math_obj_mvalue_getAsDouble(self) * math_obj_mvalue_getAsDouble(other);
@@ -99,10 +99,10 @@ math_obj __math_obj_eval_division(math_obj self, math_obj other) {
     math_obj_mvalue_assert(other);
 
     if (math_obj_mvalue_isEqualToLong(other, 0)) {
-        throw_error("Division by zero", str_getString(&other->label));
+        throw_error("Division by zero", "0");
     }
 
-    if (self->permValueType == MATH_OBJ_DOUBLE || other->permValueType == MATH_OBJ_DOUBLE) {
+    if (self->typeTag == CONSTANT_DOUBLE || other->typeTag == CONSTANT_DOUBLE) {
         // double calc
 
         double val = math_obj_mvalue_getAsDouble(self) / math_obj_mvalue_getAsDouble(other);
@@ -128,14 +128,14 @@ math_obj __math_obj_eval_fraction(math_obj self, math_obj other) {
     math_obj_mvalue_assert(other);
 
     if (math_obj_mvalue_isEqualToLong(other, 0)) {
-        throw_error("Division By Zero", str_getString(&other->label));
+        throw_error("Division By Zero", "0");
     }
 
     if (math_obj_mvalue_isEqualToLong(self, 0)) {
         return buildMathObjectConstantLong(0);
     }
 
-    if (self->permValueType == MATH_OBJ_DOUBLE || other->permValueType == MATH_OBJ_DOUBLE) {
+    if (self->typeTag == CONSTANT_DOUBLE || other->typeTag == CONSTANT_DOUBLE) {
         // double calc
         return __math_obj_eval_division(self, other);
     }
@@ -163,10 +163,10 @@ math_obj __math_obj_eval_fraction(math_obj self, math_obj other) {
 
 math_obj math_obj_simplify_negate(math_obj self) {
     assert(self->typeTag == NEGATE);
-    assert(len(self->children) == 1);
+    assert(len(math_obj_getChildren(self)) == 1);
 
-    if (math_obj_isConstant(self->children[0])) {
-        math_obj newSelf = __math_obj_eval_negate(self->children[0]);
+    if (math_obj_isConstant(self->data.children[0])) {
+        math_obj newSelf = __math_obj_eval_negate(self->data.children[0]);
 
         math_obj_free(self);
         return newSelf;
@@ -176,25 +176,25 @@ math_obj math_obj_simplify_negate(math_obj self) {
 }
 
 math_obj math_obj_simplify_plus(math_obj self) {
-    int childCount = len(self->children);
+    unsigned int childCount = len(math_obj_getChildren(self));
     assert(self->typeTag == PLUS);
     assert(childCount > 1);
     // analyze for possible simplification
     math_obj last = NULL;
     int indexOfFirst = -1;
 
-    for (int i = 0; i < childCount; ++i) {
-        if (math_obj_isConstant(self->children[i])) {
+    for (unsigned int i = 0; i < childCount; ++i) {
+        if (math_obj_isConstant(self->data.children[i])) {
             if (last == NULL) {
-                last = self->children[i];
-                self->children[i] = NULL;
+                last = self->data.children[i];
+                self->data.children[i] = NULL;
                 indexOfFirst = i;
             }
             else {
-                math_obj newlast = __math_obj_eval_plus(last, self->children[i]);
+                math_obj newlast = __math_obj_eval_plus(last, self->data.children[i]);
                 math_obj_free(last);
-                math_obj_free(self->children[i]);
-                self->children[i] = NULL;
+                math_obj_free(self->data.children[i]);
+                self->data.children[i] = NULL;
 
                 last = newlast;
             }
@@ -206,24 +206,24 @@ math_obj math_obj_simplify_plus(math_obj self) {
         
         if (math_obj_mvalue_isEqualToLong(last, 0)) {
             math_obj_free(last);
-            self->children[indexOfFirst] = NULL;
+            self->data.children[indexOfFirst] = NULL;
         }
         else {
-            self->children[indexOfFirst] = last;
+            self->data.children[indexOfFirst] = last;
         }
         
     }
 
-    self->children = __math_obj_takeOutNull(self->children);
+    self->data.children = __math_obj_takeOutNull(self->data.children);
 
-    if (len(self->children) == 1) {
+    if (len(math_obj_getChildren(self)) == 1) {
         // only one left
-        math_obj tmp = self->children[0];
-        self->children[0] = NULL;
+        math_obj tmp = self->data.children[0];
+        self->data.children[0] = NULL;
         math_obj_free(self);
         return tmp;
     }
-    else if (len(self->children) == 0) {
+    else if (len(math_obj_getChildren(self)) == 0) {
         // nothing left
         math_obj tmp = buildMathObjectConstantLong(0);
         math_obj_free(self);
@@ -235,32 +235,32 @@ math_obj math_obj_simplify_plus(math_obj self) {
 
 math_obj math_obj_simplify_product(math_obj self) {
     assert(self->typeTag == PRODUCT);
-    int childCount = len(self->children);
+    unsigned int childCount = len(math_obj_getChildren(self));
 
     assert(childCount > 1);
     // analyze for possible simplification
     math_obj last = NULL;
     int indexOfFirst = -1;
 
-    for (int i = 0; i < childCount; ++i) {
-        if (math_obj_isConstant(self->children[i])) {
+    for (unsigned int i = 0; i < childCount; ++i) {
+        if (math_obj_isConstant(self->data.children[i])) {
             
-            if (math_obj_mvalue_isEqualToLong(self->children[i], 0)) {
+            if (math_obj_mvalue_isEqualToLong(self->data.children[i], 0)) {
                 // everything is zero
                 math_obj_free(self);
                 return buildMathObjectConstantLong(0);
             }
 
             if (last == NULL) {
-                last = self->children[i];
-                self->children[i] = NULL;
+                last = self->data.children[i];
+                self->data.children[i] = NULL;
                 indexOfFirst = i;
             }
             else {
-                math_obj newlast = __math_obj_eval_product(last, self->children[i]);
+                math_obj newlast = __math_obj_eval_product(last, self->data.children[i]);
                 math_obj_free(last);
-                math_obj_free(self->children[i]);
-                self->children[i] = NULL;
+                math_obj_free(self->data.children[i]);
+                self->data.children[i] = NULL;
 
                 last = newlast;
             }
@@ -271,24 +271,24 @@ math_obj math_obj_simplify_product(math_obj self) {
         assert(math_obj_isConstant(last));
         if (math_obj_mvalue_isEqualToLong(last, 1)) {
             math_obj_free(last);
-            self->children[indexOfFirst] = NULL;
+            self->data.children[indexOfFirst] = NULL;
         }
         else {
-            self->children[indexOfFirst] = last;
+            self->data.children[indexOfFirst] = last;
         }
         
     }
 
-    self->children = __math_obj_takeOutNull(self->children);
+    self->data.children = __math_obj_takeOutNull(self->data.children);
 
-    if (len(self->children) == 1) {
+    if (len(self->data.children) == 1) {
         // only one left
-        math_obj tmp = self->children[0];
-        self->children[0] = NULL;
+        math_obj tmp = self->data.children[0];
+        self->data.children[0] = NULL;
         math_obj_free(self);
         return tmp;
     }
-    else if (len(self->children) == 0) {
+    else if (len(self->data.children) == 0) {
         // nothing left
         math_obj tmp = buildMathObjectConstantLong(1);
         math_obj_free(self);
@@ -300,18 +300,18 @@ math_obj math_obj_simplify_product(math_obj self) {
 
 math_obj math_obj_simplify_fraction(math_obj self) {
     assert(self->typeTag == FRACTION);
-    int childCount = len(self->children);
+    int childCount = len(self->data.children);
     assert(childCount == 2);
 
-    math_obj num = self->children[0];
-    math_obj denom = self->children[1];
+    math_obj num = self->data.children[0];
+    math_obj denom = self->data.children[1];
 
     if (math_obj_isConstant(num) && math_obj_mvalue_isEqualToLong(num, 0)) {
         math_obj_free(self);
         return buildMathObjectConstantLong(0);
     }
     else if (math_obj_isConstant(denom) && math_obj_mvalue_isEqualToLong(denom, 1)) {
-        self->children[0] = NULL;
+        self->data.children[0] = NULL;
         math_obj_free(self);
         return num;
     }
@@ -338,15 +338,15 @@ math_obj math_obj_eval(math_obj self) {
         return NULL;
     }
 
-    int childCount = len(self->children);
+    unsigned int childCount = len(math_obj_getChildren(self));
 
-    for (int i = 0; i < childCount; ++i) {
-        self->children[i] = math_obj_eval(self->children[i]);
+    for (unsigned int i = 0; i < childCount; ++i) {
+        self->data.children[i] = math_obj_eval(self->data.children[i]);
     }
 
     if (childCount == 0) {
         if (self->typeTag == VARIABLE) {
-            math_obj m = variables_get(&self->label);
+            math_obj m = variables_get(&self->data.label);
             if (m != NULL) {
                 math_obj_free(self);
                 return m;

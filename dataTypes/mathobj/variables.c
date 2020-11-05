@@ -23,7 +23,7 @@ void variables_add(String * name, math_obj m) {
         throw_error("Variable Name Missing", "");
     }
 
-    for (int i = 0; i < currIndex; ++i) {
+    for (unsigned int i = 0; i < currIndex; ++i) {
         if (str_isEqual(&definitionsArray[i].name, name)) {
             throw_error("Variable Already Exist", str_getString(name));
         }
@@ -51,7 +51,7 @@ math_obj variables_get(String * name) {
         throw_error("Variable Name Missing", "");
     }
 
-    for (int i = 0; i < currIndex; ++i) {
+    for (unsigned int i = 0; i < currIndex; ++i) {
         if (str_isEqual(&definitionsArray[i].name, name)) {
             return math_obj_copy(definitionsArray[i].value);
         }
@@ -68,7 +68,7 @@ void variables_cleanup() {
         return;
     }
     
-    for (int i = 0; i < currIndex; ++i) {
+    for (unsigned int i = 0; i < currIndex; ++i) {
         math_obj_free(definitionsArray->value);
         str_free(&definitionsArray->name);
     }

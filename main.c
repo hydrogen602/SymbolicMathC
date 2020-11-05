@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include "dataTypes/array.h"
-#include "dataTypes/str.h"
+#include "dataStructs/array.h"
+#include "dataStructs/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/header.h"
 #include "parser.h"
@@ -59,6 +59,9 @@ void repl() {
 
             math_obj_free(m);
         }
+        else {
+            puts("NULL");
+        }
     }
 }
 
@@ -114,7 +117,7 @@ int test() {
 
     str_free(&sTest);
 
-    for (int i = 0; i < len(arr); ++i) {
+    for (unsigned int i = 0; i < len(arr); ++i) {
         printf("arr[%d] = \"%s\"\n", i, str_getString(arr+i));
     }
 

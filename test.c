@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "dataTypes/array.h"
-#include "dataTypes/str.h"
+#include "dataStructs/array.h"
+#include "dataStructs/str.h"
 #include "dataTypes/mathobj.h"
 #include <string.h>
 
@@ -204,7 +204,7 @@ void testStr() {
 
         char * c = str_getString(&s);
 
-        for (int i = 0; i < 10; ++i) {
+        for (unsigned int i = 0; i < 10; ++i) {
             c[i] = 'a' + i;
         }
 

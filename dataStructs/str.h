@@ -46,7 +46,7 @@ String buildStringFromInteger(long int x);
 
 String buildStringFromDouble(double d);
 
-String buildStringFromStdin(int maxLen);
+String buildStringFromStdin(unsigned int maxLen);
 
 void str_free(String * self);
 
@@ -54,7 +54,7 @@ String str_copy(String * self);
 
 String str_move(String * self);
 
-String str_slice(String * self, int startIndex);
+String str_slice(String * self, unsigned int startIndex);
 
 String str_filterOutChar(String * self, char c);
 
@@ -93,6 +93,10 @@ StringArray str_split(String * self, char c);
 StringArray str_rsplit2(String * self, char c);
 
 bool str_isEqual(String * self, String * other);
+
+int str_cmp(String * self, String * other);
+
+int str_cmp_special(String self, String other);
 
 bool str_startswith(String * self, String * other);
 

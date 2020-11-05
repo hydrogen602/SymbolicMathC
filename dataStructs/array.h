@@ -13,6 +13,7 @@ void* newArray(size_t length, size_t size);
 /**
  * ptr - an array created from newArray
  * returns the count of elements in the array
+ * returns null if given a nullptr
  */
 size_t len(void* ptr);
 
