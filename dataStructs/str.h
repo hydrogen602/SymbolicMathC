@@ -96,8 +96,6 @@ bool str_isEqual(String * self, String * other);
 
 int str_cmp(String * self, String * other);
 
-int str_cmp_special(String self, String other);
-
 bool str_startswith(String * self, String * other);
 
 bool str_startswithCString(String * self, char * other);

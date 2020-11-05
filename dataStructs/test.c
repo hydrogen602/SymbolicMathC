@@ -4,6 +4,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+
+#define KEY_T int
+#define VAL_T const char *
 #include "avltree.h"
 
 #define crashOnFail true
@@ -92,6 +95,8 @@ void testBasic() {
         assert(keys[i] == ptr->key);
         assert(strcmp(vals[i], ptr->value) == 0);
     }
+
+    assert(avl_tree_getNode(&tr, 20) == NULL);
 
     avl_tree_free(&tr);
 }
