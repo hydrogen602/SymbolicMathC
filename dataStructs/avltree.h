@@ -3,13 +3,34 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include "string.h"
+#include <string.h>
+#include "str.h"
+
+#ifndef KEY_T
+    #define KEY_T int
+#endif
+
+#ifndef VAL_T
+    #define VAL_T const char *
+#endif
+
+/*
+ * Makes it easier to switch between
+ * key types
+ */
+#define __compKeys(a, b) _Generic((a), \
+    default: _subtractor, \
+    const char *: strcmp, \
+    char *: strcmp, \
+    String: str_cmp_special \
+)((a), (b))
+
 
 typedef struct AVL_TREE_NODE {
     struct AVL_TREE_NODE * left;
     struct AVL_TREE_NODE * right;
-    const char * value;
-    int key;
+    VAL_T value;
+    KEY_T key;
     unsigned int height;
 } AVLTreeNode;
 
@@ -39,9 +60,9 @@ void avl_tree_free(AVLTree * tree);
 
 void free_AVLTreeNode(AVLTreeNode * ptr);
 
-int avl_tree_add(AVLTree * tree, int key, const char * value);
+int avl_tree_add(AVLTree * tree, KEY_T key, VAL_T value);
 
-AVLTreeNode * avl_tree_getNode(AVLTree * tree, int key);
+AVLTreeNode * avl_tree_getNode(AVLTree * tree, KEY_T key);
 
 AVLTreeIterator avl_tree_iterate(AVLTree * tree);
 

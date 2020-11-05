@@ -397,6 +397,13 @@ int str_cmp(String * self, String * other) {
     return strcmp(s, o);
 }
 
+int str_cmp_special(String self, String other) {
+    char * s = str_getString(&self);
+    char * o = str_getString(&other);
+
+    return strcmp(s, o);
+}
+
 bool str_startswith(String * self, String * other) {
     char * s = str_getString(self);
     char * o = str_getString(other);

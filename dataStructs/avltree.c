@@ -5,14 +5,14 @@
 #include <math.h>
 #include "avltree.h"
 #include "array.h"
+#include "str.h"
 
 #define heightDiff(parent) ( ( ((parent)->right == NULL) ? 0 : (int)((parent)->right->height) ) - ( ((parent)->left == NULL) ? 0 : (int)((parent)->left->height) ) )
 
 
 AVLTreeNode * __rotateRight(AVLTreeNode * parent);
 AVLTreeNode * __rotateLeft(AVLTreeNode * parent);
-int __compKeys(int a, int b);
-AVLTreeNode * __build_AVLTreeNode(int key, const char * value);
+AVLTreeNode * __build_AVLTreeNode(KEY_T key, VAL_T value);
 unsigned int __avl_tree_getHeight(AVLTreeNode * node);
 int __avl_tree_add_helper(AVLTreeNode ** parentPtr, AVLTreeNode * newNode);
 int __avl_tree_add(AVLTree * tree, AVLTreeNode * newNode);
@@ -75,11 +75,7 @@ AVLTreeNode * __rotateLeft(AVLTreeNode * parent) {
     return y;
 }
 
-/*
- * Makes it easier to switch between
- * key types
- */
-int __compKeys(int a, int b) {
+int _subtractor(long a, long b) {
     return a - b;
 }
 
@@ -93,7 +89,7 @@ AVLTree build_AVLTree() {
     return t;
 }
 
-AVLTreeNode * __build_AVLTreeNode(int key, const char * value) {
+AVLTreeNode * __build_AVLTreeNode(KEY_T key, VAL_T value) {
     AVLTreeNode * ptr = malloc(sizeof(AVLTreeNode));
     ptr->value = value;
     ptr->key = key;
@@ -119,7 +115,7 @@ void avl_tree_free(AVLTree * tree) {
     tree->height = 0;
 }
 
-int avl_tree_add(AVLTree * tree, int key, const char * value) {
+int avl_tree_add(AVLTree * tree, KEY_T key, VAL_T value) {
     AVLTreeNode * newNode = __build_AVLTreeNode(key, value);
     int result = __avl_tree_add(tree, newNode);
     if (result != EXIT_SUCCESS) {
@@ -268,10 +264,10 @@ int __avl_tree_add(AVLTree * tree, AVLTreeNode * newNode) {
     return EXIT_SUCCESS;
 }
 
-AVLTreeNode * avl_tree_getNode(AVLTree * tree, int key) {
+AVLTreeNode * avl_tree_getNode(AVLTree * tree, KEY_T key) {
     AVLTreeNode * ptr = tree->root;
 
-    while (ptr != NULL && ptr->key != key) {
+    while (ptr != NULL && __compKeys(ptr->key, key) != 0) {
         if (__compKeys(key, ptr->key) < 0) {
             ptr = ptr->left;
         }
