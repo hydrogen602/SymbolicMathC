@@ -1,6 +1,14 @@
 S  -> E $
-E  -> T E'
+# E  -> T E'
+# E' -> + T E' | ε
+# T  -> F T'
+# T' -> * F T' | ε
+# F  -> ( E ) | int
+
+E  -> define var = T E' | T E'
 E' -> + T E' | ε
 T  -> F T'
 T' -> * F T' | ε
-F  -> ( E ) | int
+F  -> O F' | - O F'
+F' -> / O | ε
+O  -> var | const

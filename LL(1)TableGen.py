@@ -206,7 +206,8 @@ def convertToCSymbolTerminal(t):
         '*': 'Times',
         '/': 'Divide',
         '$': 'EOS',
-        'ε': 'Epsilon'
+        'ε': 'Epsilon',
+        '=': 'Equal'
     }
 
     tmp = t
@@ -223,7 +224,8 @@ def convertToCSymbolNonTerm(t):
 if __name__ == '__main__':
     # rules = ''
     with open('grammar.txt') as f:
-        rules = f.read()
+        lines = f.readlines()
+        rules = '\n'.join(line for line in lines if not line.startswith('#'))
 
     ruleBook = processRules(rules)
     # for k, v in ruleBook.items():

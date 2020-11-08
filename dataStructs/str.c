@@ -390,6 +390,11 @@ bool str_isEqual(String * self, String * other) {
     return strcmp(s, o) == 0;
 }
 
+bool str_isEqualCString(String * self, const char * other) {
+    char * s = str_getString(self);
+    return strcmp(s, other) == 0;
+}
+
 int str_cmp(String * self, String * other) {
     char * s = str_getString(self);
     char * o = str_getString(other);

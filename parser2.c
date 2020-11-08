@@ -3,6 +3,7 @@
 #include "dataStructs/str.h"
 #include "errors.h"
 #include <stdio.h>
+#include <regex.h>
 
 typedef struct __PARSER2_STACK {
     Symbol * stack;
@@ -169,40 +170,78 @@ void stackTest() {
 // Lexer
 
 SymbolArr lexer(String str) {
-    char * s = str_getString(&str);
-    int length = str_getLen(&str);
+    //char * s = str_getString(&str);
+    //int length = str_getLen(&str);
 
     Parser2Stack ps = __buildStack();
 
-    for (int i = 0; i < length; ++i) {
-        char c = s[i];
+    // const int maxTokenLen = 50;
 
-        Symbol tok = Invalid_Symbol;
+    // int soFarIndex = 0;
 
-        switch (c)
-        {
-        case '(':
-            tok = Term_L_Parens;
-            break;
-        case ')':
-            tok = Term_R_Parens;
-            break;
-        case 'a':
-            tok = Term_int;
-            break;
-        case '+':
-            tok = Term_Plus;
-            break;
-        default:
-            break;
-        }
+    // for (int i = 0; i < length; ++i) {
+    //     char c = s[i];
+    //     // char soFar[maxTokenLen+1];
+    //     // for (int j = 0; j < maxTokenLen+1; ++j) {
+    //     //     soFar[j] = 0;
+    //     // }
 
-        if (tok == Invalid_Symbol) {
-            throw_error("Cannot parse", s);
-        }
+    //     Symbol tok = Invalid_Symbol;        
 
-        __push(&ps, tok);
+    //     if (tok == Invalid_Symbol) {
+    //         throw_error("Cannot parse", s);
+    //     }
+
+    //     __push(&ps, tok);
+    // }
+
+    regex_t patternConst;
+    const char constRegex[] = "^[-]?[0-9]+([.][0-9]*)?$";
+    regex_t patternVar;
+    const char varRegex[] = "^[[:alpha:]_][[:alpha:][:digit:]_]*$";
+
+    if (regcomp(&patternConst, constRegex, REG_EXTENDED) != 0) {
+        throw_error("Regex invalid", constRegex);
     }
+    if (regcomp(&patternVar, varRegex, REG_EXTENDED) != 0) {
+        throw_error("Regex invalid", varRegex);
+    }
+
+    StringArray tokens = str_split(&str, ' ');
+
+    for (int i = 0; i < len(tokens); ++i) {
+        const char * tok = str_getString(tokens+i);
+        if (str_isEqualCString(tokens+i, "define")) {
+            __push(&ps, Term_define);
+        }
+        else if (str_isEqualCString(tokens+i, "+")) {
+            __push(&ps, Term_Plus);
+        }
+        else if (str_isEqualCString(tokens+i, "-")) {
+            __push(&ps, Term_Minus);
+        }
+        else if (str_isEqualCString(tokens+i, "*")) {
+            __push(&ps, Term_Times);
+        }
+        else if (str_isEqualCString(tokens+i, "/")) {
+            __push(&ps, Term_Divide);
+        }
+        else if (str_isEqualCString(tokens+i, "=")) {
+            __push(&ps, Term_Equal);
+        }
+        else if (!regexec(&patternConst, tok, 0, NULL, 0)) {
+            __push(&ps, Term_const);
+        }
+        else if (!regexec(&patternVar, tok, 0, NULL, 0)) {
+            __push(&ps, Term_var);
+        }
+        else {
+            throw_error("Unrecognized symbol", tok);
+        }
+
+    }
+
+    __push(&ps, Term_EOS);
 
     SymbolArr arr = newArray(ps.size, sizeof(Symbol));
     for (int i = ps.size - 1; i >= 0; --i) {
