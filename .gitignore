@@ -1,5 +1,17 @@
-a.out
+# compiled files
 *.o
+
+# executables
+a.out
 main
 test
+parseTest
+
+# config
 .vscode/
+
+# generated files
+parseTable.c
+parseTable.h
+
+

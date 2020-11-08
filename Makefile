@@ -20,7 +20,7 @@ DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/types/*.c))
 DATA_TYPES += $(patsubst %.c,%.o,$(filter-out dataStructs/main.c dataStructs/test.c, $(wildcard dataStructs/*.c)))
 
 
-OTHER_OBJ_FILES := parser.o errors.o
+OTHER_OBJ_FILES := parser.o errors.o parseTable.o parser2.o
 
 .PHONY: clean
 
@@ -30,8 +30,18 @@ all: $(DATA_TYPES) $(HEADERS) $(OTHER_OBJ_FILES) main.o
 test: clean $(DATA_TYPES) $(HEADERS) $(OTHER_OBJ_FILES) test.o
 	$(CC) -o test $(DATA_TYPES) $(OTHER_OBJ_FILES) test.o $(LDLIBS)
 
+parseTest: clean $(HEADERS) $(OTHER_OBJ_FILES) $(DATA_TYPES) parseTest.o
+	$(CC) -o parseTest $(DATA_TYPES) $(OTHER_OBJ_FILES) parseTest.o $(LDLIBS)
+
+
 clean:
 	rm -f main test *.o dataTypes/*.o dataTypes/mathobj/*.o dataTypes/mathobj/types/*.o dataStructs/*.o
+
+LL\(1\)TableGen.py:
+	python3 LL\(1\)TableGen.py
+
+parseTable.o: parseTable.c $(HEADERS) LL\(1\)TableGen.py
+	$(CC) $(CFLAGS) -c parseTable.c -o parseTable.o
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $*.c -o $@
