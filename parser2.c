@@ -1,5 +1,6 @@
 #include "parseTable.h"
 #include "dataStructs/array.h"
+#include "dataStructs/str.h"
 #include "errors.h"
 #include <stdio.h>
 
@@ -163,4 +164,51 @@ void stackTest() {
     }    
 
     __freeStack(&st);
+}
+
+// Lexer
+
+SymbolArr lexer(String str) {
+    char * s = str_getString(&str);
+    int length = str_getLen(&str);
+
+    Parser2Stack ps = __buildStack();
+
+    for (int i = 0; i < length; ++i) {
+        char c = s[i];
+
+        Symbol tok = Invalid_Symbol;
+
+        switch (c)
+        {
+        case '(':
+            tok = Term_L_Parens;
+            break;
+        case ')':
+            tok = Term_R_Parens;
+            break;
+        case 'a':
+            tok = Term_int;
+            break;
+        case '+':
+            tok = Term_Plus;
+            break;
+        default:
+            break;
+        }
+
+        if (tok == Invalid_Symbol) {
+            throw_error("Cannot parse", s);
+        }
+
+        __push(&ps, tok);
+    }
+
+    SymbolArr arr = newArray(ps.size, sizeof(Symbol));
+    for (int i = ps.size - 1; i >= 0; --i) {
+        arr[i] = __pop(&ps);
+    }
+
+    __freeStack(&ps);
+    return arr;
 }

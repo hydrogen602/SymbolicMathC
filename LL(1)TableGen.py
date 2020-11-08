@@ -264,6 +264,8 @@ if __name__ == '__main__':
 #include <stdbool.h>
 
 typedef enum Symbol {
+    Invalid_Symbol,
+
 '''
     cNonTermNames = []
 
@@ -352,7 +354,7 @@ bool ll1_isTerminal(enum Symbol s) {
 }
 
 bool ll1_isNonTerminal(enum Symbol s) {
-    return !ll1_isTerminal(s);
+    return !ll1_isTerminal(s) && s != Invalid_Symbol;
 }
 
 SymbolArr ll1_lookupTable(enum Symbol nonTerm, enum Symbol nextTerm) {
@@ -375,6 +377,18 @@ void ll1_printToken(enum Symbol s) {
     }
 }
 '''
+
+    '''
+    int ll1_lookupToken(char c, Symbol * writeInto) {
+        switch (c) {
+    ''' + \
+    '\n'.join(' '*8+ f'case \'{t}\': return {convertToCSymbolTerminal(t)};' for t in terms)    \
+    + '''
+            default:
+                return 1;
+        }
+    }
+    '''
 
     with open('parseTable.c', 'w') as f:
         f.write(out)
