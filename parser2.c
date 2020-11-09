@@ -1,6 +1,7 @@
-#include "parseTable.h"
+#include "dataStructs/parseTable.h"
 #include "dataStructs/array.h"
 #include "dataStructs/str.h"
+#include "dataStructs/abstractSyntaxTree.h"
 #include "errors.h"
 #include <stdio.h>
 #include <regex.h>
@@ -87,6 +88,10 @@ void parser2(SymbolArr input) {
     //__push(&st, Term_EOS); Term_EOS is part of S production
     __push(&st, NonTerm_S);
 
+    //Parser2Stack semanticSt = __buildStack();
+
+    //AST tree = ast_build();
+
     unsigned int curIndex = 0;
 
     while(st.size > 0) {
@@ -134,6 +139,7 @@ void parser2(SymbolArr input) {
                 for (int i = len(production) -1; i >= 0 ; --i) {
                     __push(&st, production[i]);
                 }
+
                 freeArray(production);
             }
         }
@@ -209,7 +215,7 @@ SymbolArr lexer(String str) {
 
     StringArray tokens = str_split(&str, ' ');
 
-    for (int i = 0; i < len(tokens); ++i) {
+    for (unsigned int i = 0; i < len(tokens); ++i) {
         const char * tok = str_getString(tokens+i);
         if (str_isEqualCString(tokens+i, "define")) {
             __push(&ps, Term_define);

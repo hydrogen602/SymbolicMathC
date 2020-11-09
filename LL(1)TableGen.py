@@ -302,7 +302,7 @@ void ll1_printToken(enum Symbol s);
 #endif
 '''
 
-    with open('parseTable.h', 'w') as f:
+    with open('dataStructs/parseTable.h', 'w') as f:
         f.write(out)
 
     def case(nT):
@@ -340,8 +340,8 @@ void ll1_printToken(enum Symbol s);
 
 #include <stdio.h>
 #include "parseTable.h"
-#include "dataStructs/array.h"
-#include "errors.h"
+#include "array.h"
+#include "../errors.h"
 
 #define allocArr(n) enum Symbol * arr = newArray((n), sizeof(enum Symbol))
 
@@ -392,6 +392,6 @@ void ll1_printToken(enum Symbol s) {
     }
     '''
 
-    with open('parseTable.c', 'w') as f:
+    with open('dataStructs/parseTable.c', 'w') as f:
         f.write(out)
     

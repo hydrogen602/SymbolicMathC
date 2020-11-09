@@ -20,7 +20,7 @@ DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/types/*.c))
 DATA_TYPES += $(patsubst %.c,%.o,$(filter-out dataStructs/main.c dataStructs/test.c, $(wildcard dataStructs/*.c)))
 
 
-OTHER_OBJ_FILES := parser.o errors.o parseTable.o parser2.o
+OTHER_OBJ_FILES := parser.o errors.o parser2.o
 
 .PHONY: clean
 
