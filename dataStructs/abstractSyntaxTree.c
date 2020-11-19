@@ -2,7 +2,6 @@
 #include "array.h"
 #include <stddef.h>
 #include <stdlib.h>
-#include "../errors.h"
 
 AST ast_build() {
     AST t = { ast_new_node(NonTerm_S) };
