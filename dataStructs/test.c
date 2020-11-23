@@ -203,6 +203,7 @@ void testIterator() {
 #endif
 
 #define VAL_T int
+#define INCLUDE_DEFINITIONS_ARRAYLIST
 #include "arrayList.h"
 
 void testArrList() {

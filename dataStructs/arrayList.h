@@ -1,3 +1,13 @@
+/*
+ * How to use:
+ * 
+ * #define VAL_T <your type>   
+ * 
+ * To include definitions:
+ *      #define INCLUDE_DEFINITIONS_ARRAYLIST
+ * 
+ */
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include "exception.h"
@@ -27,6 +37,14 @@ typedef struct ARRAY_LIST_TYPE(VAL_T)
     size_t __capacity;
     size_t length;
 } ARRAY_LIST_TYPE(VAL_T);
+
+ARRAY_LIST_TYPE(VAL_T) __func(newArrayList, VAL_T)();
+void __func(freeArrayList, VAL_T)(ARRAY_LIST_TYPE(VAL_T) * arrList);
+void __func(arrLs_append, VAL_T)(ARRAY_LIST_TYPE(VAL_T) * arrList, VAL_T val);
+VAL_T __func(arrLs_pop, VAL_T)(ARRAY_LIST_TYPE(VAL_T) * arrList);
+
+#ifdef INCLUDE_DEFINITIONS_ARRAYLIST
+#undef INCLUDE_DEFINITIONS_ARRAYLIST
 
 ARRAY_LIST_TYPE(VAL_T) __func(newArrayList, VAL_T)() {
     ARRAY_LIST_TYPE(VAL_T) t;
@@ -85,3 +103,5 @@ VAL_T __func(arrLs_pop, VAL_T)(ARRAY_LIST_TYPE(VAL_T) * arrList) {
     --(arrList->length);
     return arrList->list[arrList->length];
 }
+
+#endif
