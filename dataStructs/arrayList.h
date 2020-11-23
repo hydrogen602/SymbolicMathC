@@ -6,11 +6,15 @@
  * To include definitions:
  *      #define INCLUDE_DEFINITIONS_ARRAYLIST
  * 
+ * Possibly useful for globals:
+ *      ARRAY_LIST_NULL_INIT
  */
 
 #include <stdbool.h>
 #include <stdlib.h>
 #include "exception.h"
+
+#define ARRAY_LIST_NULL_INIT { NULL, 0UL, 0UL }
 
 #ifndef CONCAT_
     #define CONCAT_(A, B) A ## _ ## B
@@ -30,8 +34,6 @@
 #endif
 
 #define ARRAY_LIST_TYPE(type) CONCAT_(ArrayList, type)
-
-#define ARRAY_LIST_NULL_INIT { NULL, 0UL, 0UL }
 
 typedef struct ARRAY_LIST_TYPE(VAL_T)
 {

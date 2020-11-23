@@ -9,10 +9,12 @@ CFLAGS += $(VALGRIND)
 
 HEADERS := $(wildcard *.h)
 
+OTHER_FILES := ../dataStructs/str.o ../dataStructs/array.o
+
 .PHONY: build clean
 
-build: lex.yy.o main.o arrayListToken.o
-	gcc -o main lex.yy.o main.o arrayListToken.o
+build: lex.yy.o main.o arrayListToken.o $(OTHER_FILES)
+	gcc -o main lex.yy.o main.o arrayListToken.o $(OTHER_FILES)
 
 lex.yy.c: lexer.l
 	flex lexer.l

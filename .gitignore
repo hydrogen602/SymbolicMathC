@@ -13,5 +13,4 @@ parseTest
 # generated files
 parseTable.c
 parseTable.h
-
-
+parsing/lex.yy.c

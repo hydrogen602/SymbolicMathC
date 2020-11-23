@@ -13,8 +13,6 @@ int yylineno;
 
 int yyerror(const char* s);
 
-
-
 %}
 
 %%
@@ -37,4 +35,3 @@ int yyerror(const char* s)
     exit(1);
 }
 
-int 

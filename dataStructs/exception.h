@@ -3,6 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define exception(name, reason) fprintf(stderr, "Exception in %s on line %d\n\t%s: %s", __FILE__, __LINE__, (name), (reason)); exit(EXIT_FAILURE)
+#define exception(name, reason) fprintf(stderr, "Exception in %s on line %d\n\t%s: %s\n", __FILE__, __LINE__, (name), (reason)); exit(EXIT_FAILURE)
 
 #endif
