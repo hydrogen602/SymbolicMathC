@@ -6,8 +6,6 @@
 #define VAL_T String
 #include "../dataStructs/arrayList.h"
 
-char *yytext;
-
 int main() { 
   
     // Explanation: 
@@ -30,12 +28,12 @@ int main() {
     ArrayList_String tokens = newArrayList_String();
 
 
-    yy_scan_string("a+a");
+    yy_scan_string("-3e-5 - b");
   
     Token t = yylex();
     while (t != Tok_EOS)
     {
-        printf("Got token %d\n", t);
+        token_printer(t);
         arrLs_append_String(&tokens, buildString(yytext));
         t = yylex();
     }

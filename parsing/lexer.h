@@ -75,3 +75,5 @@ int yylex();
 YY_BUFFER_STATE yy_scan_string ( const char *yy_str );
 
 int yylex_destroy ( void );
+
+char *yytext;

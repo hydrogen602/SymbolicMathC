@@ -6,8 +6,12 @@ typedef enum Token {
     Tok_Equal,          // =
     Tok_Plus,           // +
     Tok_var,            // var
-    Tok_const,          // const
+    Tok_int,            // const int
+    Tok_float,          // const decimal
     Tok_Minus,          // -
     Tok_Divide,         // /
-    Tok_Times          // *
+    Tok_Times           // *
+
 } Token;
+
+void token_printer(Token tok);

@@ -13,8 +13,8 @@ OTHER_FILES := ../dataStructs/str.o ../dataStructs/array.o
 
 .PHONY: build clean
 
-build: lex.yy.o main.o arrayListToken.o $(OTHER_FILES)
-	gcc -o main lex.yy.o main.o arrayListToken.o $(OTHER_FILES)
+build: lex.yy.o main.o arrayListToken.o tokens.o $(OTHER_FILES)
+	gcc -o main lex.yy.o main.o arrayListToken.o tokens.o $(OTHER_FILES)
 
 lex.yy.c: lexer.l
 	flex lexer.l
