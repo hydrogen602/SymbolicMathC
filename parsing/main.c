@@ -38,7 +38,7 @@ int main() {
         t = yylex();
     }
 
-    for (int i = 0; i < tokens.length; ++i) {
+    for (unsigned int i = 0; i < tokens.length; ++i) {
         printf("Got token in ArrayList: %s\n", str_getString(tokens.list + i));
     }
 

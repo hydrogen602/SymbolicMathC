@@ -3,6 +3,7 @@
 
 %option nounput
 %option noinput
+%option noyywrap
 
 %{
 #include "tokens.h"
@@ -41,8 +42,6 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 \n          { ++yylineno; return 0; }
 
 %%
-
-int yywrap() { return 1; } 
 
 int yyerror(const char* s)
 {

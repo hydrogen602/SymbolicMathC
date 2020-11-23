@@ -78,7 +78,11 @@ bool str_isNumber(String * self);
 
 long int str_toInteger(String * self);
 
+long int str_toInteger_cString(const char * str);
+
 double str_toDouble(String * self);
+
+double str_toDouble_cString(const char * str);
 
 /**
  * Uses the array.h stuff!

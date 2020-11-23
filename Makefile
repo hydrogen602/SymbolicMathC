@@ -17,7 +17,7 @@ HEADERS += $(wildcard dataStructs/*.h)
 DATA_TYPES := $(patsubst %.c,%.o,$(wildcard dataTypes/*.c))
 DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/*.c))
 DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/types/*.c))
-DATA_TYPES += $(patsubst %.c,%.o,$(filter-out dataStructs/main.c dataStructs/test*.c, $(wildcard dataStructs/*.c)))
+DATA_TYPES += $(patsubst %.c,%.o,$(filter-out dataStructs/main.c dataStructs/test.c, $(wildcard dataStructs/*.c)))
 
 
 OTHER_OBJ_FILES := parser.o errors.o parser2.o
@@ -36,6 +36,7 @@ parseTest: clean $(HEADERS) $(OTHER_OBJ_FILES) $(DATA_TYPES) parseTest.o
 
 clean:
 	rm -f main test *.o dataTypes/*.o dataTypes/mathobj/*.o dataTypes/mathobj/types/*.o dataStructs/*.o
+	$(MAKE) -C parsing clean
 
 LL\(1\)TableGen.py:
 	python3 LL\(1\)TableGen.py

@@ -324,9 +324,14 @@ bool str_isNumber(String * self) {
     return str_isInteger(self) || str_isDouble(self);
 }
 
-long int str_toInteger(String * self) {
+long int str_toInteger_cString(const char * str) {
+    if (strlen(str) == 0) {
+        fprintf(stderr, "Cannot convert an empty string to integer\n");
+        exit(1);
+    }
+    
     char * ptr;
-    long int n = strtol(str_getString(self), &ptr, 10);
+    long int n = strtol(str, &ptr, 10);
 
     if (n == 0) {
         if (errno == EINVAL) {
@@ -335,17 +340,46 @@ long int str_toInteger(String * self) {
         }
 
         if (errno == ERANGE) {
-            fprintf(stderr, "The value provided was out of range: %s\n", str_getString(self));
+            fprintf(stderr, "The value provided was out of range: %s\n", str);
             exit(1);
         }
 
         if (strlen(ptr) > 0) {
-            fprintf(stderr, "Integer Parse Error in string \"%s\": offending bit = \"%s\"\n", str_getString(self), ptr);
+            fprintf(stderr, "Integer Parse Error in string \"%s\": offending bit = \"%s\"\n", str, ptr);
+            exit(1);
+        }
+    }
+
+    return n;
+}
+
+long int str_toInteger(String * self) {
+    return str_toInteger_cString(str_getString(self));
+}
+
+double str_toDouble_cString(const char * str) {
+    //double strtod(const char *str, char **endptr)
+    if (strlen(str) == 0) {
+        fprintf(stderr, "Cannot convert an empty string to integer\n");
+        exit(1);
+    }
+
+    char * ptr;
+    double n = strtod(str, &ptr);
+
+    if (n == 0) {
+        if (errno == EINVAL) {
+            fprintf(stderr, "Conversion error occurred: %d\n", errno);
             exit(1);
         }
 
-        if (str_getLen(self) == 0) {
-            fprintf(stderr, "Cannot convert an empty string to integer\n");
+        if (errno == ERANGE) {
+            fprintf(stderr, "The value provided was out of range: %s\n", str);
+            exit(1);
+        }
+
+        if (strlen(ptr) > 0) {
+            fprintf(stderr, "Integer Parse Error in string \"%s\": offending bit = \"%s\"\n", str, ptr);
             exit(1);
         }
     }
@@ -354,33 +388,7 @@ long int str_toInteger(String * self) {
 }
 
 double str_toDouble(String * self) {
-    //double strtod(const char *str, char **endptr)
-    char * ptr;
-    double n = strtod(str_getString(self), &ptr);
-
-    if (n == 0) {
-        if (errno == EINVAL) {
-            fprintf(stderr, "Conversion error occurred: %d\n", errno);
-            exit(1);
-        }
-
-        if (errno == ERANGE) {
-            fprintf(stderr, "The value provided was out of range: %s\n", str_getString(self));
-            exit(1);
-        }
-
-        if (strlen(ptr) > 0) {
-            fprintf(stderr, "Integer Parse Error in string \"%s\": offending bit = \"%s\"\n", str_getString(self), ptr);
-            exit(1);
-        }
-
-        if (str_getLen(self) == 0) {
-            fprintf(stderr, "Cannot convert an empty string to integer\n");
-            exit(1);
-        }
-    }
-
-    return n;
+    return str_toDouble_cString(str_getString(self));
 }
 
 bool str_isEqual(String * self, String * other) {
