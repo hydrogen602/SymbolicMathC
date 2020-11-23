@@ -8,11 +8,19 @@
 %{
 #include "tokens.h"
 #include "lexer.h"
+#include "parser.tab.h"
 #include <stdio.h>
+#include <string.h>
 
 int yylineno;
 
 int yyerror(const char* s);
+
+// "="         { return Tok_Equal; }
+// "+"         { return Tok_Plus; }
+// "*"         { return Tok_Times; }
+// "/"         { return Tok_Divide; }
+// "-"         { return Tok_Minus; }
 
 %}
 
@@ -25,16 +33,10 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 
 "define"    { return Tok_define; }
 
-{exponent}  { return Tok_float; }
-{integer}   { return Tok_int; }
-{float}     { return Tok_float; }
-{variable}  { return Tok_var; }
-
-"="         { return Tok_Equal; }
-"+"         { return Tok_Plus; }
-"*"         { return Tok_Times; }
-"/"         { return Tok_Divide; }
-"-"         { return Tok_Minus; }
+{exponent}  { yylval.fval = str_toDouble_cString(yytext); return CONST_FLOAT; }
+{integer}   { yylval.ival = str_toInteger_cString(yytext); return CONST_INT; }
+{float}     { yylval.fval = str_toDouble_cString(yytext); return CONST_FLOAT; }
+{variable}  { yylval.sval = strdup(yytext); return VARIABLE; }
 
 
 " "         { /* do nothing */ }
