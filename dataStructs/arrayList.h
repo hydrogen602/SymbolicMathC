@@ -31,6 +31,8 @@
 
 #define ARRAY_LIST_TYPE(type) CONCAT_(ArrayList, type)
 
+#define ARRAY_LIST_NULL_INIT { NULL, 0UL, 0UL }
+
 typedef struct ARRAY_LIST_TYPE(VAL_T)
 {
     VAL_T * list;
@@ -58,7 +60,7 @@ ARRAY_LIST_TYPE(VAL_T) __func(newArrayList, VAL_T)() {
 }
 
 void __func(freeArrayList, VAL_T)(ARRAY_LIST_TYPE(VAL_T) * arrList) {
-    if (arrList != NULL) {
+    if (arrList != NULL && arrList->list != NULL) {
         free(arrList->list);
         arrList->list = NULL;
     }
@@ -71,7 +73,14 @@ void __func(arrLs_append, VAL_T)(ARRAY_LIST_TYPE(VAL_T) * arrList, VAL_T val) {
         exception("NullPointerException", "arrList");
     }
 
-    if (arrList->length >= arrList->__capacity) {
+    if (arrList->list == NULL) {
+        arrList->__capacity = 16;
+        arrList->list = (VAL_T *) calloc(arrList->__capacity, sizeof(VAL_T));
+        if (arrList->list == NULL) {
+            exception("Memory Allocation Failed", "calloc returned NULL");
+        }
+    }
+    else if (arrList->length >= arrList->__capacity) {
         VAL_T * newArr = (VAL_T *) calloc(arrList->__capacity * 2, sizeof(VAL_T));
         if (newArr == NULL) {
             exception("Memory Allocation Failed", "calloc returned NULL");
