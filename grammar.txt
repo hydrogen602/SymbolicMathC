@@ -12,3 +12,31 @@ T' -> * F T' | ε
 F  -> O F' | - O F'
 F' -> / O | ε
 O  -> var | const
+
+
+LALR(1)
+
+E -> E + T | T
+T -> T * F | F
+F -> ( E ) | id
+
+https://smlweb.cpsc.ucalgary.ca/start.html
+
+E0 →	E0 + T7
+|	T0 .
+T0 →	T0 * F8
+|	F0 .
+F0 →	( E4 )
+|	id .
+E4 →	E4 + T7
+|	T4 .
+T4 →	T4 * F8
+|	F4 .
+F4 →	( E4 )
+|	id .
+T7 →	T7 * F8
+|	F7 .
+F7 →	( E4 )
+|	id .
+F8 →	( E4 )
+|	id .

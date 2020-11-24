@@ -92,6 +92,13 @@ math_obj math_obj_copy(math_obj self) {
     return NULL;
 }
 
+math_obj_array buildMathObjectArrayFrom2(math_obj a, math_obj b) {
+    math_obj_array arr = newArray(2, sizeof(math_obj));
+    arr[0] = a;
+    arr[1] = b;
+    return arr;
+}
+
 math_obj __buildMathObjectVarLike(String * label, math_type typeTag) {
     char * c = str_getString(label);
     if (strcmp(c, "define") == 0) {
@@ -182,7 +189,7 @@ void math_obj_printer(math_obj self) {
 }
 
 void math_obj_debug_printer(math_obj self) {
-if (self == NULL) {
+    if (self == NULL) {
         printf("NULL ");
     }
     elif (usesChildren(self)) {
@@ -196,7 +203,7 @@ if (self == NULL) {
             putchar(math_obj_getOpSymbol(self->typeTag));
             //putchar(' ');
 
-            math_obj_printer(self->data.children[0]);
+            math_obj_debug_printer(self->data.children[0]);
         }
         else {
             math_obj_printer(self->data.children[0]);
@@ -204,13 +211,14 @@ if (self == NULL) {
                 putchar(math_obj_getOpSymbol(self->typeTag));
                 putchar(' ');
 
-                math_obj_printer(self->data.children[i]);
+                math_obj_debug_printer(self->data.children[i]);
             }
         }
         printf(") ");
     }
     elif (usesLabel(self)) {
         str_print(&self->data.label);
+        putchar(' ');
     }
     elif (usesPermValue(self)) {
         if (self->typeTag == CONSTANT_LONG) {
@@ -226,6 +234,7 @@ if (self == NULL) {
         else {
             assert(false);
         }
+        putchar(' ');
     }
 }
 

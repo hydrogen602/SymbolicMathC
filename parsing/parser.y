@@ -18,17 +18,24 @@
 %token <fval> TOK_CONST_FLOAT
 %token <sval> TOK_VARIABLE
 
-%type <mobj> start
+%type <mobj> E T value
 
 %token DEFINE
 
-%start	start
+%start  start
 
 %%
 
-start: 
-    TOK_CONST_INT { *out = buildMathObjectConstantLong($1); }
-    | TOK_CONST_FLOAT { *out = buildMathObjectConstantDouble($1); }
-    | TOK_VARIABLE { String s = buildString($1); *out = buildMathObjectVariable(&s); free($1); }
+start: E { *out = $1; }
+
+E:    T { $$ = $1; } 
+    | E '+' T { $$ = buildMathObjectPlus(buildMathObjectArrayFrom2($1, $3)); }
+
+T: value { $$ = $1; }
+
+value:
+    TOK_CONST_INT { $$ = buildMathObjectConstantLong($1); }
+    | TOK_CONST_FLOAT { $$ = buildMathObjectConstantDouble($1); }
+    | TOK_VARIABLE { String s = buildString($1); $$ = buildMathObjectVariable(&s); free($1); }
 
 %%

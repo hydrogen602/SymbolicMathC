@@ -56,7 +56,7 @@
 // } 
 
 int main() {
-    yy_scan_string("x");
+    yy_scan_string("x + 4 + 5");
 
     math_obj out = NULL;
 
