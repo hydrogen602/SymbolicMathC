@@ -14,5 +14,5 @@ How to run:
 # Notes on coding standards
 
 Avoid any call to malloc, calloc, or free.  
-For allocating strings, structs, or arrays, use the functions found in dataTypes.  
+For allocating strings, structs, or arrays, use the functions found in dataTypes or dataStructs.  
 This keeps memory management cleaner and deals with nullptrs.
