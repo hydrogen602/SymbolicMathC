@@ -70,12 +70,14 @@ struct yy_buffer_state
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
+#include "../dataTypes/mathobj.h"
+
 int yylex();
 
 YY_BUFFER_STATE yy_scan_string ( const char *yy_str );
 
 int yylex_destroy();
 
-int yyerror(int* out, const char* s);
+int yyerror(math_obj *out, const char* s);
 
 char *yytext;

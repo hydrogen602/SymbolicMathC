@@ -28,9 +28,9 @@ math_obj buildMathObjectConstantFromString(String * label) {
         return buildMathObjectConstantLong(n);
     }
     else {
-        if (str_contains(label, 'e') || str_contains(label, 'E')) {
-            throw_error("Invalid number", str_getString(label));
-        }
+        // if (str_contains(label, 'e') || str_contains(label, 'E')) {
+        //     throw_error("Invalid number", str_getString(label));
+        // }
         double d = str_toDouble(label);
 
         return buildMathObjectConstantDouble(d);

@@ -2,6 +2,7 @@
 #include "parser.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "../dataTypes/mathobj.h"
 
 // #include "../dataStructs/str.h"
 // #define VAL_T String
@@ -55,9 +56,9 @@
 // } 
 
 int main() {
-    yy_scan_string("4 + 3");
+    yy_scan_string("1e-7");
 
-    int out = 0;
+    math_obj out = NULL;
 
     // Parse through the input:
     if (yyparse(&out) != 0) {
@@ -67,5 +68,10 @@ int main() {
 
     yylex_destroy();
 
-    printf("Output = %d\n", out);
+    math_obj_debug_printer(out);
+    putchar('\n');
+
+    math_obj_free(out);
+
+    return 0;
 }

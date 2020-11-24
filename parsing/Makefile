@@ -9,14 +9,14 @@ CFLAGS += $(VALGRIND)
 
 HEADERS := $(wildcard *.h)
 
-OTHER_FILES := ../dataStructs/str.o ../dataStructs/array.o
+OTHER_FILES := ../dataStructs/str.o ../dataStructs/array.o $(wildcard ../dataTypes/mathobj/*.o) $(wildcard ../dataTypes/mathobj/types/*.o) ../errors.o ../dataTypes/util.o
 
 OBJ := parser.tab.o lex.yy.o main.o
 
 .PHONY: build clean
 
 build: $(OBJ) $(OTHER_FILES)
-	gcc -o main $(OBJ) $(OTHER_FILES)
+	gcc -o main $(OBJ) $(OTHER_FILES) $(LDLIBS)
 
 lex.yy.c: lexer.l
 	flex lexer.l

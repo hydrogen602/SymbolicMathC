@@ -2,22 +2,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "lexer.h"
-//#include "../dataTypes/mathobj.h"
+#include "../dataTypes/mathobj.h"
 %}
 
 %union {
     long int ival;
     double fval;
     char *sval;
+    math_obj mobj;
 }
 
-%parse-param { int *out }
+%parse-param { math_obj *out }
 
-%token <ival> CONST_INT
-%token <fval> CONST_FLOAT
-%token <sval> VARIABLE
+%token <ival> TOK_CONST_INT
+%token <fval> TOK_CONST_FLOAT
+%token <sval> TOK_VARIABLE
 
-%type <ival> start
+%type <mobj> start
 
 %token DEFINE
 
@@ -26,6 +27,7 @@
 %%
 
 start: 
-    CONST_INT '+' CONST_INT { *out = $1 + $3; }
+    TOK_CONST_INT { *out = buildMathObjectConstantLong($1); }
+    | TOK_CONST_FLOAT { *out = buildMathObjectConstantDouble($1); }
 
 %%

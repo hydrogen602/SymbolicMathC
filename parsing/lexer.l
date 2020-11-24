@@ -27,10 +27,10 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 
 "define"    { return DEFINE; }
 
-{exponent}  { yylval.fval = str_toDouble_cString(yytext); return CONST_FLOAT; }
-{integer}   { yylval.ival = str_toInteger_cString(yytext); return CONST_INT; }
-{float}     { yylval.fval = str_toDouble_cString(yytext); return CONST_FLOAT; }
-{variable}  { yylval.sval = strdup(yytext); return VARIABLE; }
+{exponent}  { yylval.fval = str_toDouble_cString(yytext); return TOK_CONST_FLOAT; }
+{integer}   { yylval.ival = str_toInteger_cString(yytext); return TOK_CONST_INT; }
+{float}     { yylval.fval = str_toDouble_cString(yytext); return TOK_CONST_FLOAT; }
+{variable}  { yylval.sval = strdup(yytext); return TOK_VARIABLE; }
 
 "="         { return '='; }
 "+"         { return '+'; }
@@ -44,7 +44,7 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 
 %%
 
-int yyerror(int *out, const char* s)
+int yyerror(math_obj *out, const char* s)
 {
     fprintf(stderr, "Invalid token on line %d: %s\n", yylineno, s);
 
