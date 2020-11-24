@@ -56,7 +56,7 @@
 // } 
 
 int main() {
-    yy_scan_string("-((x + 4) * 5)");
+    yy_scan_string("5 / (x + 1)");
 
     math_obj out = NULL;
 

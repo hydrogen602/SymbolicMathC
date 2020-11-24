@@ -34,6 +34,7 @@ E:    T { $$ = $1; }
 
 T:    F { $$ = $1; }
     | T '*' F { $$ = buildMathObjectProduct(buildMathObjectArrayFrom2($1, $3)); }
+    | T '/' F { $$ = buildMathObjectFraction($1, $3); }
 
 F:    F2     { $$ = $1; }
     | '-' F2 { $$ = buildMathObjectNegate($2); }

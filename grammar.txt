@@ -17,7 +17,7 @@ O  -> var | const
 LALR(1)
 
 E -> E + T | E - T | T
-T -> T * F | F
+T -> T * F | T / F | F
 F -> F | -F
 F2 -> ( E ) | id
 
