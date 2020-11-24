@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+#ifndef LEXER_H_
+#define LEXER_H_
+
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -72,12 +75,21 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 
 #include "../dataTypes/mathobj.h"
 
+typedef enum STATEMENT_TYPE {
+	STMT_Unknown,
+    STMT_Expression,
+    STMT_Equation,
+    STMT_Definition
+} StmtType;
+
 int yylex();
 
-YY_BUFFER_STATE yy_scan_string ( const char *yy_str );
+YY_BUFFER_STATE yy_scan_string(const char *yy_str);
 
 int yylex_destroy();
 
-int yyerror(math_obj *out, const char* s);
+int yyerror(math_obj *out, StmtType *stmt, const char* s);
 
 char *yytext;
+
+#endif

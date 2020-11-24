@@ -185,6 +185,7 @@ void math_obj_printer(math_obj self) {
         else {
             assert(false);
         }
+        putchar(' ');
     }
 }
 

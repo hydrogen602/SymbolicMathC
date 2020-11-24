@@ -1,3 +1,9 @@
 #include "../dataTypes/mathobj.h"
+#include "lexer.h"
 
-math_obj parse(const char * s);
+struct ParseOutput {
+    math_obj obj;
+    StmtType type;
+};
+
+struct ParseOutput parse(const char * s);

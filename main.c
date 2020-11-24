@@ -6,29 +6,31 @@
 #include "dataTypes/header.h"
 #include "parsing/parse.h"
 #include "dataTypes/mathobj/variables.h"
+#include "dataStructs/exception.h"
+#include "errors.h"
 
 
 int test();
 
-void evalTest(char * c) {
-    String s = buildString(c);
+// void evalTest(char * c) {
+//     String s = buildString(c);
 
-    math_obj m = parse(str_getString(&s));
-    //parseString(&s, 1);
+//     math_obj m = parse(str_getString(&s));
+//     //parseString(&s, 1);
 
-    str_free(&s);
+//     str_free(&s);
 
-    math_obj_debug_printer(m);
-    //putchar('\n');
-    printf("-> ");
+//     math_obj_debug_printer(m);
+//     //putchar('\n');
+//     printf("-> ");
 
-    m = math_obj_eval(m);
+//     m = math_obj_eval(m);
 
-    math_obj_debug_printer(m);
-    putchar('\n');
+//     math_obj_debug_printer(m);
+//     putchar('\n');
 
-    math_obj_free(m);
-}
+//     math_obj_free(m);
+// }
 
 void repl() {
 
@@ -48,21 +50,69 @@ void repl() {
             return;
         }
 
-        math_obj m = parse(str_getString(&in));//parseString(&in, lineCounter);
+        struct ParseOutput pOut = parse(str_getString(&in));//parseString(&in, lineCounter);
 
         str_free(&in);
 
-        if (m != NULL) {
-            m = math_obj_eval(m);
+        math_obj m = pOut.obj;
 
-            math_obj_printer(m);
-            putchar('\n');
-
-            math_obj_free(m);
-        }
-        else {
+        if (m == NULL) {
             puts("NULL");
         }
+        else {
+            switch (pOut.type)
+            {
+            case STMT_Expression:
+                m = math_obj_eval(m);
+
+                math_obj_printer(m);
+                putchar('\n');
+                break;
+            
+            case STMT_Definition:
+                m = math_obj_eval(m);
+
+                if (m->typeTag != EQUATION) {
+                    char s[25];
+                    for (int i = 0; i < 25; ++i) {
+                        s[i] = '\0';
+                    }
+                    snprintf(s, 11, "typeTag = %d", pOut.type);
+                    exception("Invalid math obj, expected equation", s);
+                }
+
+                assert(len(math_obj_getChildren(m)) == 2);
+                math_obj var = m->data.children[0];
+                math_obj value = m->data.children[1];
+
+                if (var->typeTag != VARIABLE) {
+                    char s[25];
+                    for (int i = 0; i < 25; ++i) {
+                        s[i] = '\0';
+                    }
+                    snprintf(s, 11, "typeTag = %d", pOut.type);
+                    exception("Invalid math obj, expected variable on left side", s);
+                }
+
+                String cpy = str_copy(&var->data.label);
+                variables_add(&cpy, value);
+
+                m->data.children[1] = NULL; // right side is the only thing we keep
+                math_obj_free(m);
+
+                break;
+            default:;
+                char s[12];
+                for (int i = 0; i < 12; ++i) {
+                    s[i] = '\0';
+                }
+                snprintf(s, 11, "%d", pOut.type);
+                exception("Unknown statement type", s);
+                break;
+            }
+        }
+
+        math_obj_free(m);
     }
 }
 

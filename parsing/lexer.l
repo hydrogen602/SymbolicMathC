@@ -35,12 +35,12 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 [=+*/\-()]     { return yytext[0]; }
 
 " "         { /* do nothing */ }
-.		    { yyerror(NULL, yytext); }
+.		    { yyerror(NULL, NULL, yytext); }
 \n          { ++yylineno; return '\n'; }
 
 %%
 
-int yyerror(math_obj *out, const char* s)
+int yyerror(math_obj *out, StmtType *stmt, const char* s)
 {
     fprintf(stderr, "Invalid token on line %d: %s\n", yylineno, s);
 

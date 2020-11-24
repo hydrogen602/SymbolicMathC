@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../dataTypes/mathobj.h"
+#include "parse.h"
 
 // #include "../dataStructs/str.h"
 // #define VAL_T String
@@ -55,14 +56,25 @@
 //     return 0; 
 // } 
 
-math_obj parse(const char * s) {
+struct ParseOutput parse(const char * s) {
     yy_scan_string(s);
 
     math_obj out = NULL;
+    StmtType type = STMT_Unknown;
 
     // Parse through the input:
-    if (yyparse(&out) != 0) {
+    if (yyparse(&out, &type) != 0) {
         fprintf(stderr, "Parsing failed\n");
+        exit(1);
+    }
+
+    if (out == NULL) {
+        fprintf(stderr, "Parsing returned NULL\n");
+        exit(1);
+    }
+
+    if (type == STMT_Unknown) {
+        fprintf(stderr, "Parsing did not identify statement type\n");
         exit(1);
     }
 
@@ -71,5 +83,7 @@ math_obj parse(const char * s) {
     math_obj_debug_printer(out);
     putchar('\n');
 
-    return out;
+    struct ParseOutput result = { out, type };
+
+    return result;
 }
