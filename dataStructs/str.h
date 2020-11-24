@@ -78,7 +78,11 @@ bool str_isNumber(String * self);
 
 long int str_toInteger(String * self);
 
+long int str_toInteger_cString(const char * str);
+
 double str_toDouble(String * self);
+
+double str_toDouble_cString(const char * str);
 
 /**
  * Uses the array.h stuff!
@@ -93,6 +97,8 @@ StringArray str_split(String * self, char c);
 StringArray str_rsplit2(String * self, char c);
 
 bool str_isEqual(String * self, String * other);
+
+bool str_isEqualCString(String * self, const char * other);
 
 int str_cmp(String * self, String * other);
 

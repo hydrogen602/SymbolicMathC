@@ -4,7 +4,7 @@
 
 int lineNum = 0;
 
-void throw_error(char * err, char * cause) {
+void throw_error(const char * err, const char * cause) {
     if (lineNum > 0) {
         fprintf(stderr, "ERROR: Line %d: %s: %s\n", lineNum, err, cause);
     }

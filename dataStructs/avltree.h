@@ -13,7 +13,6 @@
 #ifndef KEY_T
     #define KEY_T int
     #warning Key type KEY_T not defined
-    
 #endif
 
 #ifndef VAL_T
@@ -217,7 +216,7 @@ unsigned int __avl_tree_getHeight(AVLTreeNode * node) {
  *
  * Returns 1 (EXIT_FAILURE) if the node cannot be added
  * Returns 0 (EXIT_SUCCESS) if the node was added and the height is the same
- * Returns -1 if the node was added and the height changed
+ * No longer applies -> Returns -1 if the node was added and the height changed
  */
 int __avl_tree_add_helper(AVLTreeNode ** parentPtr, AVLTreeNode * newNode) {
     AVLTreeNode * parent = *parentPtr;

@@ -196,6 +196,68 @@ void testIterator() {
     avl_tree_free(&tr);
 }
 
+// ArrayList
+
+#ifdef VAL_T
+    #undef VAL_T
+#endif
+
+#define VAL_T int
+#define INCLUDE_DEFINITIONS_ARRAYLIST
+#include "arrayList.h"
+
+void testArrList() {
+
+    int nums[] = {-98, 98, 93, 71, 4, -31, -48, -94, 10, 61, -57, 14, 71, -82, -64, 96, -50, -27, -65, 49, -94, 37, -31, -80, -94, -3, -97, 28, 47, -97, -38, 69, -56, -92, -11};
+
+    {
+        ArrayList_int ls = newArrayList_int();
+
+        for (int i = 0; i < 35; ++i) {
+            assert(i == ls.length);
+            arrLs_append_int(&ls, nums[i]);
+        }
+
+        for (int i = 35-1; i >= 0; --i) {
+            assert(ls.list[i] == nums[i]);
+        } 
+
+        for (int i = 0; i < 35; ++i) {
+            assert(ls.length == 35 - i);
+            assert(arrLs_pop_int(&ls) == nums[35-1-i]);
+        }  
+
+        assert(ls.length == 0);
+        freeArrayList_int(&ls);
+        assert(ls.list == NULL);
+        assert(ls.__capacity == 0);
+        assert(ls.length == 0);
+    }
+
+    ArrayList_int ls = ARRAY_LIST_NULL_INIT;
+
+    for (int i = 0; i < 35; ++i) {
+        assert(i == ls.length);
+        arrLs_append_int(&ls, nums[i]);
+    }
+
+    for (int i = 35-1; i >= 0; --i) {
+        assert(ls.list[i] == nums[i]);
+    } 
+
+    for (int i = 0; i < 35; ++i) {
+        assert(ls.length == 35 - i);
+        assert(arrLs_pop_int(&ls) == nums[35-1-i]);
+    }  
+
+    assert(ls.length == 0);
+    freeArrayList_int(&ls);
+    assert(ls.list == NULL);
+    assert(ls.__capacity == 0);
+    assert(ls.length == 0);
+
+}
+
 int main() {
     set_avltree_silent(true);
 
@@ -203,6 +265,7 @@ int main() {
     runTester(testBigRandomInsert);
     runTester(testRepeatLength);
     runTester(testIterator);
+    runTester(testArrList);
 
     printf("Passed %d out of %d test groups\n", groupsPassed, allGroups);
 

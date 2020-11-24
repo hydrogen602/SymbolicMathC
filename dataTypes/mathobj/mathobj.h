@@ -37,6 +37,7 @@ void math_obj_free(math_obj self);
 
 math_obj math_obj_copy(math_obj self);
 
+math_obj_array buildMathObjectArrayFrom2(math_obj a, math_obj b);
 
 // math_obj buildMathObjectConstant(String * label);
 
