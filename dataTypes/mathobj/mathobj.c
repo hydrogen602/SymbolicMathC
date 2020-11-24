@@ -206,7 +206,7 @@ void math_obj_debug_printer(math_obj self) {
             math_obj_debug_printer(self->data.children[0]);
         }
         else {
-            math_obj_printer(self->data.children[0]);
+            math_obj_debug_printer(self->data.children[0]);
             for (unsigned int i = 1; i < len(self->data.children); ++i) {
                 putchar(math_obj_getOpSymbol(self->typeTag));
                 putchar(' ');

@@ -32,11 +32,7 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 {float}     { yylval.fval = str_toDouble_cString(yytext); return TOK_CONST_FLOAT; }
 {variable}  { yylval.sval = strdup(yytext); return TOK_VARIABLE; }
 
-"="         { return '='; }
-"+"         { return '+'; }
-"*"         { return '*'; }
-"/"         { return '/'; }
-"-"         { return '-'; }
+[=+*/\-()]     { return yytext[0]; }
 
 " "         { /* do nothing */ }
 .		    { yyerror(NULL, yytext); }
