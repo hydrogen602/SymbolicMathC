@@ -4,7 +4,7 @@
 #include "dataStructs/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/header.h"
-#include "parser.h"
+#include "parsing/parse.h"
 #include "dataTypes/mathobj/variables.h"
 
 
@@ -13,7 +13,8 @@ int test();
 void evalTest(char * c) {
     String s = buildString(c);
 
-    math_obj m = parseString(&s, 1);
+    math_obj m = parse(str_getString(&s));
+    //parseString(&s, 1);
 
     str_free(&s);
 
@@ -47,7 +48,7 @@ void repl() {
             return;
         }
 
-        math_obj m = parseString(&in, lineCounter);
+        math_obj m = parse(str_getString(&in));//parseString(&in, lineCounter);
 
         str_free(&in);
 

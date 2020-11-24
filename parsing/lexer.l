@@ -18,9 +18,9 @@ char * strdup(const char * s);
 
 %}
 
-integer			-?[0-9]+
-exponent        -?[0-9]+(\.[0-9]+)?[eE][+-]?[0-9]+
-float 			-?[0-9]+\.[0-9]+
+integer			[0-9]+
+exponent        [0-9]+(\.[0-9]+)?[eE][+-]?[0-9]+
+float 			[0-9]+\.[0-9]+
 variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 
 %%

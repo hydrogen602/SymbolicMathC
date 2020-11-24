@@ -55,8 +55,8 @@
 //     return 0; 
 // } 
 
-int main() {
-    yy_scan_string("5 / (x + 1)");
+math_obj parse(const char * s) {
+    yy_scan_string(s);
 
     math_obj out = NULL;
 
@@ -71,7 +71,5 @@ int main() {
     math_obj_debug_printer(out);
     putchar('\n');
 
-    math_obj_free(out);
-
-    return 0;
+    return out;
 }
