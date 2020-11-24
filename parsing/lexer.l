@@ -11,10 +11,15 @@
 #include "parser.tab.h"
 #include <stdio.h>
 #include <string.h>
+#include "../dataStructs/str.h"
 
 int yylineno;
 
+int yylex();
+int yyparse();
 int yyerror(const char* s);
+
+char * strdup(const char * s);
 
 // "="         { return Tok_Equal; }
 // "+"         { return Tok_Plus; }
@@ -41,7 +46,7 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 
 " "         { /* do nothing */ }
 .		    { yyerror(yytext); }
-\n          { ++yylineno; return 0; }
+\n          { ++yylineno; return '\n'; }
 
 %%
 
@@ -52,3 +57,13 @@ int yyerror(const char* s)
     exit(1);
 }
 
+char * strdup(const char *s) {
+    size_t length = strlen(s) + 1;
+    char * c = calloc(length, sizeof(char));
+    if (c == NULL) {
+        fprintf(stderr, "Calloc failed\n");
+        exit(1);
+    }
+    strcpy(c, s);
+    return c;
+}

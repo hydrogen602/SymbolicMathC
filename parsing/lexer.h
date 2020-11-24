@@ -76,4 +76,6 @@ YY_BUFFER_STATE yy_scan_string ( const char *yy_str );
 
 int yylex_destroy ( void );
 
+int yyerror(const char* s);
+
 char *yytext;

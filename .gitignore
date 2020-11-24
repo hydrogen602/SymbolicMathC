@@ -14,3 +14,4 @@ parseTest
 parseTable.c
 parseTable.h
 *.yy.c
+*.tab.*
