@@ -13,6 +13,8 @@
 %token <fval> CONST_FLOAT
 %token <sval> VARIABLE
 
+%token DEFINE
+
 %%
 
 start: 
@@ -25,7 +27,7 @@ start:
 %%
 
 int main() {
-  yy_scan_string("abc d -4");
+  yy_scan_string("define d -4");
   // Parse through the input:
   yyparse();
 

@@ -21,12 +21,6 @@ int yyerror(const char* s);
 
 char * strdup(const char * s);
 
-// "="         { return Tok_Equal; }
-// "+"         { return Tok_Plus; }
-// "*"         { return Tok_Times; }
-// "/"         { return Tok_Divide; }
-// "-"         { return Tok_Minus; }
-
 %}
 
 integer			-?[0-9]+
@@ -36,13 +30,18 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 
 %%
 
-"define"    { return Tok_define; }
+"define"    { return DEFINE; }
 
 {exponent}  { yylval.fval = str_toDouble_cString(yytext); return CONST_FLOAT; }
 {integer}   { yylval.ival = str_toInteger_cString(yytext); return CONST_INT; }
 {float}     { yylval.fval = str_toDouble_cString(yytext); return CONST_FLOAT; }
 {variable}  { yylval.sval = strdup(yytext); return VARIABLE; }
 
+"="         { return '='; }
+"+"         { return '+'; }
+"*"         { return '*'; }
+"/"         { return '/'; }
+"-"         { return '-'; }
 
 " "         { /* do nothing */ }
 .		    { yyerror(yytext); }
