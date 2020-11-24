@@ -29,5 +29,6 @@
 start: 
     TOK_CONST_INT { *out = buildMathObjectConstantLong($1); }
     | TOK_CONST_FLOAT { *out = buildMathObjectConstantDouble($1); }
+    | TOK_VARIABLE { String s = buildString($1); *out = buildMathObjectVariable(&s); free($1); }
 
 %%
