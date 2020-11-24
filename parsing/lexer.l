@@ -6,7 +6,6 @@
 %option noyywrap
 
 %{
-#include "tokens.h"
 #include "lexer.h"
 #include "parser.tab.h"
 #include <stdio.h>
@@ -14,10 +13,6 @@
 #include "../dataStructs/str.h"
 
 int yylineno;
-
-int yylex();
-int yyparse();
-int yyerror(const char* s);
 
 char * strdup(const char * s);
 
@@ -44,12 +39,12 @@ variable        [[:alpha:]_][[:alpha:][:digit:]_]*
 "-"         { return '-'; }
 
 " "         { /* do nothing */ }
-.		    { yyerror(yytext); }
+.		    { yyerror(NULL, yytext); }
 \n          { ++yylineno; return '\n'; }
 
 %%
 
-int yyerror(const char* s)
+int yyerror(int *out, const char* s)
 {
     fprintf(stderr, "Invalid token on line %d: %s\n", yylineno, s);
 

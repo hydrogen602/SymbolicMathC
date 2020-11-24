@@ -1,10 +1,11 @@
 #include "lexer.h"
-#include "tokens.h"
+#include "parser.tab.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "../dataStructs/str.h"
-#define VAL_T String
-#include "../dataStructs/arrayList.h"
+// #include "../dataStructs/str.h"
+// #define VAL_T String
+// #include "../dataStructs/arrayList.h"
 
 // int main() { 
   
@@ -52,3 +53,19 @@
   
 //     return 0; 
 // } 
+
+int main() {
+    yy_scan_string("4 + 3");
+
+    int out = 0;
+
+    // Parse through the input:
+    if (yyparse(&out) != 0) {
+        fprintf(stderr, "Parsing failed\n");
+        exit(1);
+    }
+
+    yylex_destroy();
+
+    printf("Output = %d\n", out);
+}

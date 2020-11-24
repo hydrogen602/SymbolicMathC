@@ -11,7 +11,7 @@ HEADERS := $(wildcard *.h)
 
 OTHER_FILES := ../dataStructs/str.o ../dataStructs/array.o
 
-OBJ := parser.tab.o lex.yy.o main.o arrayListToken.o tokens.o
+OBJ := parser.tab.o lex.yy.o main.o
 
 .PHONY: build clean
 
@@ -28,4 +28,4 @@ parser.tab.c: parser.y
 	$(CC) $(CFLAGS) -c $*.c -o $@
 
 clean:
-	rm -f *.o main lex.yy.c
+	rm -f *.o main lex.yy.c *.tab.*

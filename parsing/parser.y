@@ -1,6 +1,8 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 #include "lexer.h"
+//#include "../dataTypes/mathobj.h"
 %}
 
 %union {
@@ -9,27 +11,21 @@
     char *sval;
 }
 
+%parse-param { int *out }
+
 %token <ival> CONST_INT
 %token <fval> CONST_FLOAT
 %token <sval> VARIABLE
 
+%type <ival> start
+
 %token DEFINE
+
+%start	start
 
 %%
 
 start: 
-    start CONST_INT { printf("Int: %ld\n", $2); }
-    | start CONST_FLOAT { printf("Float: %f\n", $2); }
-    | start VARIABLE { printf("string: %s\n", $2); free($2); }
-    | CONST_INT { printf("Int: %ld\n", $1); }
-    | CONST_FLOAT { printf("Float: %f\n", $1); }
-    | VARIABLE { printf("string: %s\n", $1); free($1); }
+    CONST_INT '+' CONST_INT { *out = $1 + $3; }
+
 %%
-
-int main() {
-  yy_scan_string("define d -4");
-  // Parse through the input:
-  yyparse();
-
-  yylex_destroy();
-}
