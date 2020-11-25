@@ -42,10 +42,31 @@ typedef void * voidptr_t;
 #include "arrayList.h"
 #undef VAL_T
 
-#define freeArrayList(arrList) _Generic( arrList, ArrayList_double*: freeArrayList_double )(arrList)
-// void __func(arrLs_append, VAL_T)(ARRAY_LIST_TYPE(VAL_T) * arrList, VAL_T val);
-// VAL_T __func(arrLs_pop, VAL_T)(ARRAY_LIST_TYPE(VAL_T) * arrList);
+#define freeArrayList(arrList) _Generic( arrList,                   \
+    ARRAY_LIST_TYPE(String)*: __func(freeArrayList, String),        \
+    ARRAY_LIST_TYPE(int)*: __func(freeArrayList, int),              \
+    ARRAY_LIST_TYPE(long)*: __func(freeArrayList, long),            \
+    ARRAY_LIST_TYPE(double)*: __func(freeArrayList, double),        \
+    ARRAY_LIST_TYPE(cString_t)*: __func(freeArrayList, cString_t),  \
+    ARRAY_LIST_TYPE(voidptr_t)*: __func(freeArrayList, voidptr_t)   \
+    )(arrList)
 
-// _Generic( )
+#define arrLs_append(arrList, val) _Generic( arrList,              \
+    ARRAY_LIST_TYPE(String)*: __func(arrLs_append, String),        \
+    ARRAY_LIST_TYPE(int)*: __func(arrLs_append, int),              \
+    ARRAY_LIST_TYPE(long)*: __func(arrLs_append, long),            \
+    ARRAY_LIST_TYPE(double)*: __func(arrLs_append, double),        \
+    ARRAY_LIST_TYPE(cString_t)*: __func(arrLs_append, cString_t),  \
+    ARRAY_LIST_TYPE(voidptr_t)*: __func(arrLs_append, voidptr_t)   \
+    )(arrList, val)
+
+#define arrLs_pop(arrList) _Generic( arrList,                   \
+    ARRAY_LIST_TYPE(String)*: __func(arrLs_pop, String),        \
+    ARRAY_LIST_TYPE(int)*: __func(arrLs_pop, int),              \
+    ARRAY_LIST_TYPE(long)*: __func(arrLs_pop, long),            \
+    ARRAY_LIST_TYPE(double)*: __func(arrLs_pop, double),        \
+    ARRAY_LIST_TYPE(cString_t)*: __func(arrLs_pop, cString_t),  \
+    ARRAY_LIST_TYPE(voidptr_t)*: __func(arrLs_pop, voidptr_t)   \
+    )(arrList)
 
 #endif

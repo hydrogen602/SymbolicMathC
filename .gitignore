@@ -1,5 +1,6 @@
 # compiled files
 *.o
+*.a
 
 # executables
 a.out
@@ -15,3 +16,4 @@ parseTable.c
 parseTable.h
 *.yy.c
 *.tab.*
+

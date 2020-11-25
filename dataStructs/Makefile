@@ -11,8 +11,9 @@ HEADERS := $(wildcard *.h)
 
 OTHER_OBJ_FILES := array.o
 
+LIB_OBJ_FILES := array.o str.o arrayListDefs.o
 
-.PHONY: clean
+.PHONY: clean all lib
 
 all: $(HEADERS) $(OTHER_OBJ_FILES) main.o
 	$(CC) -o main $(OTHER_OBJ_FILES) main.o $(LDLIBS)
@@ -26,5 +27,6 @@ clean:
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $*.c -o $@
 
-lib:
-	array.o str.o arrayListDefs.o
+lib: $(LIB_OBJ_FILES)
+	ar -rc libH602Data.a *.o
+	ranlib libH602Data.a

@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -pedantic -O -std=c11
-LDLIBS = -lm
+LDLIBS = -lm -LdataStructs -lH602Data
 # add $(LDLIBS) for math
 
 VALGRIND = -O0 -g
@@ -17,7 +17,7 @@ HEADERS += $(wildcard dataStructs/*.h)
 DATA_TYPES := $(patsubst %.c,%.o,$(wildcard dataTypes/*.c))
 DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/*.c))
 DATA_TYPES += $(patsubst %.c,%.o,$(wildcard dataTypes/mathobj/types/*.c))
-DATA_TYPES += $(patsubst %.c,%.o,$(filter-out dataStructs/main.c dataStructs/test.c, $(wildcard dataStructs/*.c)))
+#DATA_TYPES += $(patsubst %.c,%.o,$(filter-out dataStructs/main.c dataStructs/test.c, $(wildcard dataStructs/*.c)))
 DATA_TYPES += parsing/parser.tab.o parsing/lex.yy.o parsing/parse.o
 
 

@@ -264,6 +264,10 @@ void testArrList() {
 void testArrList2() {
     ArrayList_double ls = newArrayList_double();
 
+    arrLs_append(&ls, 3.14);
+
+    assert(arrLs_pop(&ls) == 3.14);
+
     freeArrayList(&ls);
     assert(0 == 0); // survived _Generic
 }
