@@ -8,7 +8,7 @@
 %union {
     long int ival;
     double fval;
-    char *sval;
+    String sval;
     math_obj mobj;
 }
 
@@ -48,6 +48,6 @@ value:
     | TOK_CONST_FLOAT { $$ = buildMathObjectConstantDouble($1); }
     | var { $$ = $1; }
 
-var: TOK_VARIABLE { String s = buildString($1); $$ = buildMathObjectVariable(&s); free($1); }
+var: TOK_VARIABLE { $$ = buildMathObjectVariable(&($1)); }
 
 %%

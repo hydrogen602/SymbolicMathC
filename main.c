@@ -77,7 +77,7 @@ void repl() {
                     for (int i = 0; i < 25; ++i) {
                         s[i] = '\0';
                     }
-                    snprintf(s, 11, "typeTag = %d", pOut.type);
+                    snprintf(s, 11, "typeTag = %d", m->typeTag);
                     exception("Invalid math obj, expected equation", s);
                 }
 
@@ -90,7 +90,7 @@ void repl() {
                     for (int i = 0; i < 25; ++i) {
                         s[i] = '\0';
                     }
-                    snprintf(s, 11, "typeTag = %d", pOut.type);
+                    snprintf(s, 11, "typeTag = %d", var->typeTag);
                     exception("Invalid math obj, expected variable on left side", s);
                 }
 
@@ -98,7 +98,6 @@ void repl() {
                 variables_add(&cpy, value);
 
                 m->data.children[1] = NULL; // right side is the only thing we keep
-                math_obj_free(m);
 
                 break;
             default:;
