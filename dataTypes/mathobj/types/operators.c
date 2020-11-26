@@ -17,6 +17,11 @@ math_obj buildMathObjectProduct(math_obj_array arr) {
     return __buildMathObjectOperatorLike(arr, PRODUCT);
 }
 
+math_obj buildMathObjectTerm(math_obj constant, math_obj var) {
+    math_obj_array arr =  buildMathObjectArrayFrom2(constant, var);
+    return buildMathObjectProduct(arr);
+}
+
 math_obj buildMathObjectFraction(math_obj n, math_obj d) {
     math_obj_array arr = newMathObjectArray(2);
     arr[0] = n;

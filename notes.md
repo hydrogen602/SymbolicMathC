@@ -5,13 +5,14 @@ Crashing
 - assert if the code is at fault
 
 
-# What to do with minus?
+# What to do with minus? - Handled by lexer now
 
 - `a - b`   => `a + -b`
 - `a * -b`  => `a * (-b)`
 
 Difference:
 - if `-` is the only symbol between two vars/const, then replace it with `+ -`.
+
 
 
 ## Product & Division

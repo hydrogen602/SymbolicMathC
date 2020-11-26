@@ -64,6 +64,8 @@ void repl() {
             {
             case STMT_Expression:
                 m = math_obj_eval(m);
+                math_obj_debug_printer(m);
+                putchar('\n');
 
                 math_obj_printer(m);
                 putchar('\n');
