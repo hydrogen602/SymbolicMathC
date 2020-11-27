@@ -45,8 +45,6 @@ math_obj buildMathObjectNegate(math_obj m);
 
 math_obj buildMathObjectProduct(math_obj_array arr);
 
-math_obj buildMathObjectTerm(math_obj constant, math_obj var);
-
 math_obj buildMathObjectFraction(math_obj n, math_obj d);
 
 math_obj buildMathObjectEquation(math_obj a, math_obj b);
