@@ -158,13 +158,34 @@ void math_obj_printer(math_obj self) {
             math_obj_printer(self->data.children[0]);
         }
         else {
-            math_obj_printer(self->data.children[0]);
-            for (unsigned int i = 1; i < len(self->data.children); ++i) {
-                putchar(math_obj_getOpSymbol(self->typeTag));
-                putchar(' ');
+            if (self->typeTag == FUNCTION) {
+                math_obj_printer(self->data.children[0]);
 
-                math_obj_printer(self->data.children[i]);
+                printf("( ");
+                math_obj_printer(self->data.children[1]);
+                putchar(')');
+                putchar(' ');
             }
+            else {
+                if (self->typeTag == PLUS) {
+                    putchar('(');
+                    putchar(' ');
+                }
+
+                math_obj_printer(self->data.children[0]);
+                for (unsigned int i = 1; i < len(self->data.children); ++i) {
+                    putchar(math_obj_getOpSymbol(self->typeTag));
+                    putchar(' ');
+
+                    math_obj_printer(self->data.children[i]);
+                }
+
+                if (self->typeTag == PLUS) {
+                    putchar(')');
+                    putchar(' ');
+                }
+            }
+            
         }
     }
     elif (usesLabel(self)) {
@@ -207,12 +228,22 @@ void math_obj_debug_printer(math_obj self) {
             math_obj_debug_printer(self->data.children[0]);
         }
         else {
-            math_obj_debug_printer(self->data.children[0]);
-            for (unsigned int i = 1; i < len(self->data.children); ++i) {
-                putchar(math_obj_getOpSymbol(self->typeTag));
-                putchar(' ');
+            if (self->typeTag == FUNCTION) {
+                math_obj_printer(self->data.children[0]);
 
-                math_obj_debug_printer(self->data.children[i]);
+                printf("( ");
+                math_obj_printer(self->data.children[1]);
+                putchar(')');
+                putchar(' ');
+            }
+            else {
+                math_obj_debug_printer(self->data.children[0]);
+                for (unsigned int i = 1; i < len(self->data.children); ++i) {
+                    putchar(math_obj_getOpSymbol(self->typeTag));
+                    putchar(' ');
+
+                    math_obj_debug_printer(self->data.children[i]);
+                }
             }
         }
         printf(") ");
@@ -255,6 +286,7 @@ void __math_obj_debug_dump_helper(math_obj m, int depth) {
     else eprintf_if(tag, NEGATE)
     else eprintf_if(tag, PRODUCT)
     else eprintf_if(tag, FRACTION)
+    else eprintf_if(tag, FUNCTION)
     else { eprintf("Unknown Type Tag"); }
 
     if (usesLabel(m))

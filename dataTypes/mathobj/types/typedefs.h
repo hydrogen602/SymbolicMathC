@@ -49,4 +49,12 @@ math_obj buildMathObjectFraction(math_obj n, math_obj d);
 
 math_obj buildMathObjectEquation(math_obj a, math_obj b);
 
+/* 
+===================================================================
+                        functions.c
+===================================================================
+*/
+
+math_obj buildMathObjectFunction(math_obj label, math_obj m);
+
 #endif

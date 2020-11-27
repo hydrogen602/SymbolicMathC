@@ -4,6 +4,7 @@
 #include "dataStructs/str.h"
 #include "dataTypes/mathobj.h"
 #include "dataTypes/header.h"
+#include "dataTypes/functions.h"
 #include "parsing/parse.h"
 #include "dataTypes/mathobj/variables.h"
 #include "dataStructs/exception.h"
@@ -70,7 +71,7 @@ void repl() {
                 math_obj_printer(m);
                 putchar('\n');
                 break;
-            
+
             case STMT_Definition:
                 m = math_obj_eval(m);
 
@@ -118,6 +119,7 @@ void repl() {
 }
 
 int main() {
+    function_init();
     #if DEBUG
     printf("Size of String: %lu\n", sizeof(String));
     printf("Size of Union: %lu\n", sizeof(union __MATH_OBJ_VALUE));
@@ -136,6 +138,7 @@ int main() {
     repl();
 
     variables_cleanup();
+    function_cleanup();
 }
 
 int test() {

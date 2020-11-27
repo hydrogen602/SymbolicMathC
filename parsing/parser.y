@@ -42,6 +42,7 @@ F:    F2     { $$ = $1; }
 
 F2:   '(' E ')' { $$ = $2; }
     | value     { $$ = $1; }
+    | var '(' E ')' { $$ = buildMathObjectFunction($1, $3); }
 
 value:
     TOK_CONST_INT { $$ = buildMathObjectConstantLong($1); }

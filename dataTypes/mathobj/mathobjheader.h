@@ -14,7 +14,8 @@ typedef enum __MATH_OBJ_TYPE {
     PLUS,
     NEGATE,
     PRODUCT,
-    FRACTION
+    FRACTION,
+    FUNCTION
 } math_type;
 
 union __MATH_OBJ_VALUE {

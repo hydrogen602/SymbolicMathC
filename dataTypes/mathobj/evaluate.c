@@ -6,6 +6,7 @@
 #include "variables.h"
 #include "simplify.h"
 #include "flatten.h"
+#include "../functions.h"
 
 /**
  * Frees the incoming array if creating a new one
@@ -212,7 +213,17 @@ math_obj math_obj_eval(math_obj self) {
             return math_obj_simplify_product(self);
         case FRACTION:
             return math_obj_simplify_fraction(self);
-            break;
+        case FUNCTION:
+            assert(len(math_obj_getChildren(self)) == 2);
+            assert(self->data.children[0]->typeTag == VARIABLE);
+            String *label = &self->data.children[0]->data.label;
+            math_obj newSelf = function_callBuiltin(label, self->data.children[1]);
+            self->data.children[1] = NULL;
+            if (newSelf == NULL) {
+                return self;
+            }
+            math_obj_free(self);
+            return newSelf;
         default:
             assert(false);
             break;
